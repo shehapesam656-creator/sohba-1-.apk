@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#124436">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="صُحبة">
+<title>صُحبة — الصحبة الصحبة</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="./sohba-core.js"></script>
+<script>
+  try {
+    const u = window.SohbaCore && window.SohbaCore.getUser();
+    if (u && u.phone) {
+      window.location.replace(u.role === 'owner' ? './صُحبة-صاحب-العربية.html' : './صُحبة-مسافر.html');
+    }
+  } catch (e) {}
+</script>
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(165deg,#124436 0%,#0b2b22 65%,#081f18 100%);
+    color:#fff;font-family:'Cairo','Segoe UI',Tahoma,sans-serif;padding:28px 22px calc(24px + env(safe-area-inset-bottom,0));
+    text-align:center;
+  }
+  .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;max-width:480px;width:100%;margin:0 auto}
+  .logo{width:96px;height:96px;border-radius:26px;object-fit:cover;box-shadow:0 16px 40px rgba(0,0,0,.35);border:2px solid rgba(216,242,119,.45)}
+  h1{margin:4px 0 0;font-size:32px;font-weight:800;letter-spacing:-.5px}
+  .tag{margin:0;font-size:14px;color:rgba(255,255,255,.8);line-height:1.7}
+  .actions{max-width:480px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    padding:14px 18px;border-radius:14px;text-decoration:none;font-weight:800;font-size:15px;
+    background:#d8f277;color:#124436;box-shadow:0 10px 24px rgba(0,0,0,.25);
+  }
+  .btn.alt{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.25);box-shadow:none}
+  .srv{font-size:11px;color:rgba(255,255,255,.6);margin-top:6px}
+</style>
+</head>
+<body>
+  <div class="hero">
+    <img class="logo" src="./icon-512.png" alt="صُحبة">
+    <h1>صُحبة</h1>
+    <p class="tag">الصحبة الصحبة · السفر التشاركي الآمن<br>على خطوط مرسى مطروح ⇄ الإسكندرية والقاهرة</p>
+  </div>
+  <div class="actions">
+    <a class="btn" href="./صُحبة-التسجيل.html?mode=login">🔑 تسجيل الدخول</a>
+    <a class="btn alt" href="./صُحبة-التسجيل.html?mode=register">📝 إنشاء حساب جديد</a>
+    <div class="srv" id="srvStatus">جاري فحص الاتصال بالسيرفر...</div>
+  </div>
+<script>
+  if (window.SohbaCore) window.SohbaCore.registerSW();
+  (async function(){
+    const el = document.getElementById('srvStatus');
+    try {
+      const h = await window.SohbaCore.api('/api/health');
+      el.textContent = '🟢 متصل بالسيرفر (' + window.SohbaCore.getApiBase() + ') · رحلات متاحة: ' + h.tripsCount;
+    } catch (e) {
+      el.textContent = '🔴 غير متصل بالسيرفر (' + window.SohbaCore.getApiBase() + ')';
+    }
+  })();
+</script>
+</body>
+</html>

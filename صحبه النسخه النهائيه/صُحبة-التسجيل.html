@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>صُحبة — التسجيل والتوثيق الذكي</title>
+<meta name="theme-color" content="#124436">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="صُحبة">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="./icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="sohba-core.js"></script>
+<style>
+:root{
+  --ink:#182c28;--muted:#6c7d76;--green:#176b52;--dark-green:#124436;--lime:#d8f277;
+  --paper:#f4f6f1;--card:#ffffff;--line:#e2e8e2;--red:#dc2626;--rbg:#fef2f2;
+  --gbg:#e6f4ea;--gink:#14532d;--gline:#bbf7d0;
+  --abg:#fffbeb;--aink:#78350f;--aline:#fcd34d;
+  --bbg:#eff6ff;--bink:#1e3a8a;--bline:#93c5fd;
+  --inp:#f7f9f6;
+}
+body.dark{
+  --ink:#e7f0ec;--muted:#94a8a0;--green:#229472;--dark-green:#0c2920;--lime:#d8f277;
+  --paper:#0f1c18;--card:#162923;--line:#253d35;--rbg:#3b1818;
+  --gbg:#143829;--gink:#dcfce7;--gline:#166534;
+  --abg:#3b2306;--aink:#fef3c7;--aline:#b45309;
+  --bbg:#172554;--bink:#dbeafe;--bline:#1d4ed8;
+  --inp:#11211c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Cairo','Segoe UI',Tahoma,sans-serif;
+  background:var(--paper);
+  color:var(--ink);display:flex;align-items:stretch;justify-content:center;padding:0;
+}
+.phone{
+  width:100%;max-width:100%;height:100%;
+  background:var(--paper);border-radius:0;overflow:hidden;
+  display:flex;flex-direction:column;position:relative;
+  box-shadow:none;
+}
+@media(min-width:960px){body{background:radial-gradient(circle at top,#1f4e40,#0c1f1a);padding:16px}.phone{max-width:520px;border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.45)}}
+.hd{
+  background:linear-gradient(135deg,#124436,#176b52);color:#fff;
+  padding:16px 18px 14px;flex-shrink:0;
+}
+.hd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.brand{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:800}
+.brandmark{
+  width:44px;height:44px;border-radius:13px;flex-shrink:0;background:var(--lime);
+  color:#124436;display:grid;place-items:center;font-size:19px;font-weight:800;
+}
+.brand small{font-size:11px;color:var(--lime);font-weight:700;display:block;line-height:1}
+.icon-btn{
+  width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.14);
+  border:0;color:#fff;font-size:15px;cursor:pointer;display:grid;place-items:center;
+}
+.stepper{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:4px}
+.step-pill{
+  background:rgba(255,255,255,.12);border-radius:10px;padding:6px 8px;
+  font-size:11px;font-weight:700;color:rgba(255,255,255,.75);text-align:center;transition:.2s;
+}
+.step-pill.on{background:var(--lime);color:#124436;font-weight:800}
+.step-pill.done{background:rgba(216,242,119,.25);color:#fff}
+main{flex:1;overflow-y:auto;padding:14px 16px 24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.role-card{
+  border:2px solid var(--line);background:var(--card);border-radius:16px;padding:12px 10px;
+  text-align:center;cursor:pointer;transition:.2s;
+}
+.role-card.on{border-color:var(--green);background:var(--gbg)}
+.role-card .ico{font-size:28px;display:block;margin-bottom:4px}
+.role-card b{font-size:13.5px;display:block;color:var(--ink)}
+.role-card small{font-size:11px;color:var(--muted);display:block;margin-top:2px;line-height:1.35}
+.inp-box{background:var(--inp);border:1px solid var(--line);border-radius:12px;padding:7px 11px;margin-bottom:9px}
+.inp-box label{display:block;font-size:11px;color:var(--muted);margin-bottom:2px}
+.inp-box input{border:0;background:transparent;width:100%;font:700 13px Cairo;color:var(--ink);outline:0}
+.scan-box{
+  border:1.5px dashed var(--green);background:var(--inp);border-radius:12px;
+  padding:11px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;
+}
+.scan-box.done{border-style:solid;background:var(--gbg)}
+.btn{
+  border:0;border-radius:12px;padding:11px 14px;font:700 13px Cairo;
+  cursor:pointer;background:var(--green);color:#fff;width:100%;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s;
+}
+.btn.outline{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.policy-item{
+  background:var(--inp);border:1px solid var(--line);border-radius:12px;
+  padding:10px 12px;margin-bottom:8px;font-size:11.5px;line-height:1.55;
+}
+.policy-item b{color:var(--green);display:block;margin-bottom:2px;font-size:12px}
+.toast{
+  position:fixed;top:76px;left:16px;right:16px;background:#15352b;color:#fff;
+  padding:11px 14px;border-radius:12px;font-size:12.5px;font-weight:700;text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  opacity:0;pointer-events:none;transform:translateY(-10px);transition:.25s;z-index:9999;
+}
+.toast.on{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="phone">
+  <header class="hd">
+    <div class="hd-top">
+      <div class="brand">
+        <div class="brandmark" style="background:#124436;border:1.5px solid rgba(216,242,119,.45);overflow:hidden;padding:0">
+          <img src="data:image/jpeg;base64,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" alt="صُحبة" style="width:100%;height:100%;object-fit:cover;display:block">
+        </div>
+        <div>صُحبة<small>الصحبة الصحبة</small></div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="icon-btn" onclick="configureServer()" title="إعداد السيرفر">⚙️</button>
+        <button class="icon-btn" onclick="document.body.classList.toggle('dark')" title="الوضع الليلي">🌙</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <button type="button" id="modeLoginBtn" onclick="setAuthMode('login')" style="flex:1;padding:8px;border-radius:10px;border:0;font:800 12.5px Cairo;cursor:pointer;background:rgba(255,255,255,.15);color:#fff">🔑 تسجيل الدخول</button>
+      <button type="button" id="modeRegBtn" onclick="setAuthMode('register')" style="flex:1;padding:8px;border-radius:10px;border:0;font:800 12.5px Cairo;cursor:pointer;background:var(--lime);color:var(--dark-green)">📝 حساب جديد</button>
+    </div>
+    <div class="stepper" id="regStepper">
+      <div class="step-pill on" id="st1">١. الحساب</div>
+      <div class="step-pill" id="st2">٢. التوثيق</div>
+      <div class="step-pill" id="st3">٣. السياسات</div>
+    </div>
+  </header>
+
+  <main>
+    <!-- LOGIN PANEL -->
+    <section id="loginPanel" style="display:none">
+      <div class="card">
+        <b style="font-size:14px;color:var(--green);display:block;margin-bottom:10px">🔑 تسجيل الدخول بحسابك</b>
+        <div class="inp-box">
+          <label>رقم الموبايل</label>
+          <input id="loginPhone" type="tel" placeholder="مثال: 01012345678">
+        </div>
+        <div class="inp-box" style="margin-bottom:0">
+          <label>كلمة المرور</label>
+          <input id="loginPass" type="password" placeholder="أدخل كلمة المرور">
+        </div>
+      </div>
+      <button class="btn" id="loginSubmitBtn" onclick="doLogin()">دخول إلى حسابي ←</button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted)">
+        مفيش حساب لسه؟ <a href="javascript:void(0)" onclick="setAuthMode('register')" style="color:var(--green);font-weight:800">أنشئ حساب جديد</a>
+      </div>
+    </section>
+
+    <!-- STEP 1: ROLE & BASIC INFO -->
+    <section id="step1">
+      <div style="font-size:13px;font-weight:800;margin-bottom:8px;color:var(--ink)">هتستخدم تطبيق «صُحبة» كـ إيه؟</div>
+      <div class="role-grid">
+        <div class="role-card on" id="rcPass" onclick="selectRegRole('passenger')">
+          <span class="ico">🎒</span>
+          <b>مسافر</b>
+          <small>تأكيد بـ ٤٠ ج · حماية شنطة في الكمائن · الرحلة ٥ مجاناً</small>
+        </div>
+        <div class="role-card" id="rcOwner" onclick="selectRegRole('owner')">
+          <span class="ico">🚘</span>
+          <b>صاحب عربية خاصة</b>
+          <small>٠٪ عمولة · تقاسم بنزين كاش · شهادة #SHB للركاب</small>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="inp-box">
+          <label>الاسم الثلاثي (كما في البطاقة)</label>
+          <input id="regName" placeholder="اكتب اسمك الثلاثي">
+        </div>
+        <div class="inp-box">
+          <label>رقم الموبايل</label>
+          <input id="regPhone" type="tel" placeholder="010xxxxxxxx">
+        </div>
+        <div class="inp-box">
+          <label>كلمة المرور (4 أرقام أو أحرف على الأقل)</label>
+          <input id="regPass" type="password" placeholder="اختر كلمة مرور لحسابك">
+        </div>
+        <div class="inp-box" style="margin-bottom:0">
+          <label>رقم طوارئ الأسرة (اختياري — لمشاركة خط السير)</label>
+          <input id="regSos" type="tel" placeholder="010xxxxxxxx">
+        </div>
+      </div>
+
+      <div id="ownerCarCard" class="card" style="display:none">
+        <b style="font-size:12.5px;color:var(--green);display:block;margin-bottom:8px">🚘 بيانات سيارتك الخاصة (تُطابق مع الصور):</b>
+        <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:8px;margin-bottom:8px">
+          <div class="inp-box" style="margin-bottom:0"><label>موديل السيارة</label><input id="regCar" placeholder="مثال: كيا سبورتاج 2024"></div>
+          <div class="inp-box" style="margin-bottom:0"><label>رقم اللوحة</label><input id="regPlate" placeholder="مثال: س ن د 1234"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="inp-box" style="margin-bottom:0"><label>لون السيارة</label><input id="regColor" placeholder="مثال: فضي / أسود"></div>
+          <div class="inp-box" style="margin-bottom:0"><label>تكييف السيارة</label><select id="regAc" style="border:0;background:transparent;width:100%;font:700 13px Cairo;color:var(--ink)"><option value="1">❄️ شغال ممتاز</option><option value="0">غير متاح / لا يعمل</option></select></div>
+        </div>
+      </div>
+
+      <div id="step1Err" style="display:none;background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;margin-bottom:8px"></div>
+      <button type="button" class="btn" onclick="goStep(2)">التالي: التوثيق الذكي ←</button>
+    </section>
+
+    <!-- STEP 2: SMART KYC & PRIVACY AUTO-PURGE -->
+    <section id="step2" style="display:none">
+      <div style="background:var(--bbg);border:1px solid var(--bline);color:var(--bink);border-radius:14px;padding:11px 12px;margin-bottom:12px;font-size:11.5px;line-height:1.55">
+        🗑️ <b>وعد الخصوصية والوضوح:</b><br>
+        • 📸 <b>يجب أن تكون الصور واضحة ومقروءة بالكامل</b> ليتم اعتمادها.<br>
+        • صور البطاقة والرخص تُشفر للمراجعة فقط و<b>يتم مسح الملفات تلقائياً بعد ٣٠ يوماً</b> مع بقاء شارة التوثيق الدائمة.
+      </div>
+
+      <div class="card">
+        <div id="passKycNote" style="background:var(--gbg);color:var(--gink);padding:8px 10px;border-radius:10px;font-size:11.5px;margin-bottom:10px;line-height:1.5">
+          ✅ <b>حسابك مفعل برقم الموبايل فقط!</b> تقدر تحجز فوراً بدون بطاقة.<br>
+          <span style="font-size:11px">💡 توثيق البطاقة بالأسفل <b>اختياري</b>، لكنه يمنحك شارة «🛡️ مسافر موثق» وأولوية قبول عند أصحاب السيارات.</span>
+        </div>
+
+        <label class="scan-box" id="nidBox" style="cursor:pointer">
+          <div>
+            <b style="font-size:12.5px;display:block">🪪 بطاقة الرقم القومي <span id="nidOptTag" style="font-size:10.5px;color:var(--green)">(اختياري للمسافر)</span></b>
+            <small style="font-size:11px;color:var(--muted)">يمنحك أولوية حجز وثقة أعلى · لا يظهر رقمك لأحد</small>
+            <img id="nidPrev" style="display:none;width:56px;height:40px;object-fit:cover;border-radius:6px;margin-top:5px;border:1px solid var(--line)">
+          </div>
+          <span class="scan-status" style="font-size:11px;font-weight:800;color:var(--green)">📸 ارفع صورة</span>
+          <input id="nidFile" type="file" accept="image/*" style="display:none" onchange="handleKycUpload('nid', this)">
+        </label>
+
+        <label class="scan-box" id="selfieBox" style="cursor:pointer">
+          <div>
+            <b style="font-size:12.5px;display:block">🤳 صورة سيلفي فورية <span id="selfieOptTag" style="font-size:10.5px;color:var(--green)">(اختياري للمسافر)</span></b>
+            <small style="font-size:11px;color:var(--muted)">لإثبات الهوية والحصول على شارة التوثيق</small>
+            <img id="selfiePrev" style="display:none;width:56px;height:40px;object-fit:cover;border-radius:6px;margin-top:5px;border:1px solid var(--line)">
+          </div>
+          <span class="scan-status" style="font-size:11px;font-weight:800;color:var(--green)">📸 ارفع صورة</span>
+          <input id="selfieFile" type="file" accept="image/*" capture="user" style="display:none" onchange="handleKycUpload('selfie', this)">
+        </label>
+
+        <label class="scan-box" id="licBox" style="display:none;cursor:pointer">
+          <div>
+            <b style="font-size:12.5px;display:block">🚘 رخصة القيادة ورخصة السيارة (إلزامي)</b>
+            <small style="font-size:11px;color:var(--muted)">تُراجع من الإدارة لتفعيل حساب صاحب العربية</small>
+            <img id="licPrev" style="display:none;width:56px;height:40px;object-fit:cover;border-radius:6px;margin-top:5px;border:1px solid var(--line)">
+          </div>
+          <span class="scan-status" style="font-size:11px;font-weight:800;color:var(--green)">📸 ارفع صورة</span>
+          <input id="licFile" type="file" accept="image/*" style="display:none" onchange="handleKycUpload('lic', this)">
+        </label>
+
+        <label class="scan-box" id="carBox" style="display:none;cursor:pointer">
+          <div>
+            <b style="font-size:12.5px;display:block">🚗 صورة السيارة من الخارج باللوحة (إلزامي)</b>
+            <small style="font-size:11px;color:var(--muted)">لمطابقة الموديل واللون ورقم النمر</small>
+            <img id="carPrev" style="display:none;width:56px;height:40px;object-fit:cover;border-radius:6px;margin-top:5px;border:1px solid var(--line)">
+          </div>
+          <span class="scan-status" style="font-size:11px;font-weight:800;color:var(--green)">📸 ارفع صورة</span>
+          <input id="carFile" type="file" accept="image/*" style="display:none" onchange="handleKycUpload('car', this)">
+        </label>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button class="btn outline" style="width:auto;padding:11px 16px" onclick="goStep(1)">→ رجوع</button>
+        <button class="btn" id="step2NextBtn" style="flex:1" onclick="goStep(3)">تخطي (برقم التليفون فقط) ←</button>
+      </div>
+    </section>
+
+    <!-- STEP 3: LEGAL POLICIES & LAUNCH -->
+    <section id="step3" style="display:none">
+      <div style="font-size:13px;font-weight:800;margin-bottom:8px;color:var(--ink)">⚖️ ميثاق الأمان والسياسات (اقرأها باختصار):</div>
+
+      <div class="policy-item">
+        <b>١. سفر تشاركي لتقسيم البنزين (وليس تاكسي)</b>
+        المنصة تربط المسافرين بأصحاب السيارات الملاكي على خطوط (مطروح ⇄ القاهرة والإسكندرية) فقط، وبحد أقصى رحلتين يومياً للسيارة.
+      </div>
+      <div class="policy-item">
+        <b>٢. توثيق الأمتعة ومنع الطرود المجهولة نهائياً 🧳</b>
+        يُحظر تماماً نقل أي طرود أو أمانات بدون صاحبها، ويصدر لكل راكب توثيق رقمي (#SHB) لشنطته لراحة وأمان الجميع على الطريق.
+      </div>
+      <div class="policy-item">
+        <b>٣. حماية الشات والالتزام بالميعاد 🛡️</b>
+        يُمنع تبادل أرقام الهواتف في الشات قبل التأكيد، وتُطبق مهلة انتظار ١٥ دقيقة فقط عند نقطة التجمع.
+      </div>
+
+      <label style="display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:12px;font-weight:700;cursor:pointer">
+        <input type="checkbox" id="agreeAllChk" checked style="width:18px;height:18px;accent-color:var(--green)">
+        <span>أوافق على ميثاق الأمان وسياسة الخصوصية وحذف المستندات خلال ٣٠ يوماً.</span>
+      </label>
+
+      <div style="display:flex;gap:8px">
+        <button class="btn outline" style="width:auto;padding:11px 16px" onclick="goStep(2)">→ رجوع</button>
+        <button class="btn" id="launchBtn" style="flex:1" onclick="finishRegistration()">🚀 دخول لتطبيق المسافر</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+let regRole = 'passenger';
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.classList.remove('on'), 3000);
+}
+
+function selectRegRole(r) {
+  regRole = r;
+  document.getElementById('rcPass').classList.toggle('on', r === 'passenger');
+  document.getElementById('rcOwner').classList.toggle('on', r === 'owner');
+  document.getElementById('ownerCarCard').style.display = r === 'owner' ? 'block' : 'none';
+  document.getElementById('licBox').style.display = r === 'owner' ? 'flex' : 'none';
+  document.getElementById('carBox').style.display = r === 'owner' ? 'flex' : 'none';
+  document.getElementById('nidOptTag').textContent = r === 'owner' ? '(إلزامي)' : '(اختياري للمسافر)';
+  document.getElementById('selfieOptTag').textContent = r === 'owner' ? '(إلزامي)' : '(اختياري للمسافر)';
+  const nidBox = document.getElementById('nidBox');
+  const selfieBox = document.getElementById('selfieBox');
+  if (r === 'owner') {
+    if (!kycUrls.nid) { nidBox.classList.remove('done'); nidBox.querySelector('.scan-status').textContent = '📸 مطلوب'; }
+    if (!kycUrls.selfie) { selfieBox.classList.remove('done'); selfieBox.querySelector('.scan-status').textContent = '📸 مطلوب'; }
+    document.getElementById('step2NextBtn').textContent = 'التالي: السياسات والأمان ←';
+  } else {
+    if (!kycUrls.nid) { nidBox.classList.remove('done'); nidBox.querySelector('.scan-status').textContent = '📸 ارفع اختيارياً'; }
+    if (!kycUrls.selfie) { selfieBox.classList.remove('done'); selfieBox.querySelector('.scan-status').textContent = '📸 ارفع اختيارياً'; }
+    document.getElementById('step2NextBtn').textContent = 'تخطي (برقم التليفون فقط) ←';
+  }
+  document.getElementById('passKycNote').innerHTML = r === 'owner'
+    ? '🚘 <b>لصاحب السيارة:</b> توثيق البطاقة ورخصة القيادة والسيارة إلزامي (سيارة واحدة لكل رقم قومي).'
+    : '✅ <b>حسابك مفعل برقم الموبايل فقط!</b> تقدر تحجز فوراً بدون بطاقة.<br><span style="font-size:11px">💡 توثيق البطاقة بالأسفل <b>اختياري</b>، لكنه يمنحك شارة «🛡️ مسافر موثق» وأولوية قبول.</span>';
+  document.getElementById('launchBtn').textContent = r === 'owner'
+    ? '🚘 دخول لتطبيق صاحب العربية'
+    : '🚀 دخول لتطبيق المسافر';
+}
+
+function verifyOtp() {
+  const btn = document.getElementById('otpBtn');
+  btn.textContent = '✓ تم التحقق';
+  toast('📲 تم إرسال وتأكيد كود التحقق (OTP) بنجاح');
+}
+
+const kycUrls = { nid: '', selfie: '', lic: '', car: '' };
+
+async function handleKycUpload(kind, input) {
+  const file = input && input.files && input.files[0];
+  if (!file) return;
+  const box = document.getElementById(kind + 'Box');
+  const statusEl = box.querySelector('.scan-status');
+  const prev = document.getElementById(kind + 'Prev');
+  statusEl.textContent = '⏳ جاري الرفع...';
+  try {
+    const url = await SohbaCore.uploadImage(file, 'kyc_' + kind);
+    kycUrls[kind] = url;
+    box.classList.add('done');
+    statusEl.textContent = '✓ تم الرفع';
+    if (prev) {
+      prev.src = SohbaCore.getApiBase() + url;
+      prev.style.display = 'block';
+    }
+    if (regRole === 'passenger') {
+      document.getElementById('step2NextBtn').textContent = 'التالي (بالمستندات المرفوعة 🛡️) ←';
+    }
+    toast('✅ تم رفع الصورة للسيرفر بنجاح');
+  } catch (err) {
+    statusEl.textContent = '❌ فشل الرفع';
+    toast('❌ ' + err.message);
+  }
+}
+
+function setAuthMode(mode) {
+  const isLogin = mode === 'login';
+  document.getElementById('loginPanel').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('regStepper').style.display = isLogin ? 'none' : 'flex';
+  [1,2,3].forEach(i => { document.getElementById('step' + i).style.display = isLogin ? 'none' : (i === 1 ? 'block' : 'none'); });
+  const lb = document.getElementById('modeLoginBtn');
+  const rb = document.getElementById('modeRegBtn');
+  lb.style.background = isLogin ? 'var(--lime)' : 'rgba(255,255,255,.15)';
+  lb.style.color = isLogin ? 'var(--dark-green)' : '#fff';
+  rb.style.background = !isLogin ? 'var(--lime)' : 'rgba(255,255,255,.15)';
+  rb.style.color = !isLogin ? 'var(--dark-green)' : '#fff';
+}
+
+function configureServer() {
+  const cur = SohbaCore.getApiBase();
+  const next = prompt('عنوان السيرفر المحلي (IP الكمبيوتر + :3000):', cur);
+  if (next !== null) {
+    SohbaCore.setApiBase(next);
+    toast('✅ تم حفظ عنوان السيرفر: ' + SohbaCore.getApiBase());
+  }
+}
+
+async function doLogin() {
+  const phone = SohbaCore.normalizeDigits(document.getElementById('loginPhone').value);
+  const password = document.getElementById('loginPass').value.trim();
+  if (!SohbaCore.isValidEgyptianPhone(phone)) { toast('⚠️ أدخل رقم موبايل مصري صحيح'); return; }
+  if (!password) { toast('⚠️ أدخل كلمة المرور'); return; }
+  const btn = document.getElementById('loginSubmitBtn');
+  btn.disabled = true; btn.textContent = 'جاري الدخول...';
+  try {
+    const res = await SohbaCore.api('/api/auth/login', 'POST', { phone, password });
+    SohbaCore.saveUser(res.user);
+    toast('✅ أهلاً بيك يا ' + res.user.name + '!');
+    const target = res.user.role === 'owner' ? 'صُحبة-صاحب-العربية.html' : 'صُحبة-مسافر.html';
+    window.location.replace('./' + target);
+  } catch (err) {
+    toast('❌ ' + err.message);
+    btn.disabled = false; btn.textContent = 'دخول إلى حسابي ←';
+  }
+}
+
+function goStep(n) {
+  try {
+    const errBox = document.getElementById('step1Err');
+    if (errBox) errBox.style.display = 'none';
+    const showStepErr = function(msg) {
+      if (errBox) { errBox.textContent = msg; errBox.style.display = 'block'; }
+      toast(msg);
+    };
+    if (n === 2) {
+      const nm = (document.getElementById('regName').value || '').trim();
+      const rawPh = document.getElementById('regPhone').value || '';
+      const ph = rawPh.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\D/g, '');
+      const pw = (document.getElementById('regPass').value || '').trim();
+      if (nm.length < 3) { showStepErr('⚠️ يرجى كتابة الاسم الثلاثي الصحيح (فوق في خانة الاسم)'); return; }
+      if (!/^01[0125]\d{8}$/.test(ph)) {
+        showStepErr('⚠️ يرجى إدخال رقم موبايل مصري صحيح في خانة الموبايل (11 رقم يبدأ بـ 010/011/012/015)');
+        return;
+      }
+      if (pw.length < 4) { showStepErr('⚠️ كلمة المرور يجب أن تكون 4 أحرف/أرقام على الأقل'); return; }
+      if (regRole === 'owner' && (!document.getElementById('regCar').value.trim() || !document.getElementById('regPlate').value.trim() || !document.getElementById('regColor').value.trim())) {
+        showStepErr('⚠️ يرجى إدخال موديل السيارة ولونها ورقم اللوحة');
+        return;
+      }
+    }
+    if (n === 3 && regRole === 'owner') {
+      if (!kycUrls.nid || !kycUrls.selfie || !kycUrls.lic || !kycUrls.car) {
+        toast('📸 يجب رفع صور البطاقة والسيلفي والرخصة وصورة السيارة باللوحة للمراجعة!');
+        return;
+      }
+    }
+    [1,2,3].forEach(i => {
+      document.getElementById('step' + i).style.display = i === n ? 'block' : 'none';
+      const pill = document.getElementById('st' + i);
+      pill.classList.toggle('on', i === n);
+      pill.classList.toggle('done', i < n);
+    });
+    const m = document.querySelector('main');
+    if (m) m.scrollTop = 0;
+  } catch (err) {
+    alert('خطأ: ' + (err && err.message ? err.message : err));
+  }
+}
+
+async function finishRegistration() {
+  if (!document.getElementById('agreeAllChk').checked) {
+    toast('⚠️ يرجى الموافقة على ميثاق الأمان والسياسات أولاً');
+    return;
+  }
+  const btn = document.getElementById('launchBtn');
+  btn.disabled = true; btn.textContent = 'جاري إنشاء الحساب...';
+  try {
+    const res = await SohbaCore.api('/api/auth/register', 'POST', {
+      name: document.getElementById('regName').value.trim(),
+      phone: SohbaCore.normalizeDigits(document.getElementById('regPhone').value),
+      password: document.getElementById('regPass').value.trim(),
+      sos: SohbaCore.normalizeDigits(document.getElementById('regSos').value),
+      role: regRole,
+      car: document.getElementById('regCar').value.trim(),
+      carColor: document.getElementById('regColor').value.trim(),
+      acWorking: document.getElementById('regAc').value === '1',
+      plate: document.getElementById('regPlate').value.trim(),
+      kycDocs: {
+        nidUrl: kycUrls.nid,
+        selfieUrl: kycUrls.selfie,
+        licenseUrl: kycUrls.lic,
+        carPhotoUrl: kycUrls.car
+      }
+    });
+    SohbaCore.saveUser(res.user);
+    SohbaCore.registerSW();
+    const target = res.user.role === 'owner' ? 'صُحبة-صاحب-العربية.html' : 'صُحبة-مسافر.html';
+    toast('✅ تم إنشاء حسابك على السيرفر! جاري نقلك للتطبيق...');
+    window.location.replace('./' + target);
+  } catch (err) {
+    toast('❌ ' + err.message);
+    btn.disabled = false;
+    btn.textContent = regRole === 'owner' ? '🚘 دخول لتطبيق صاحب العربية' : '🚀 دخول لتطبيق المسافر';
+  }
+}
+
+(function initAuthMode(){
+  const p = new URLSearchParams(window.location.search);
+  setAuthMode(p.get('mode') === 'login' ? 'login' : 'register');
+})();
+</script>
+</body>
+</html>

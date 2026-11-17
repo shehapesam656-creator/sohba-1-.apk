@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>صُحبة — تطبيق صاحب العربية</title>
+<meta name="theme-color" content="#124436">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="صُحبة">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="./icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="sohba-core.js"></script>
+<style>
+:root{
+  --ink:#182c28;--muted:#6c7d76;--green:#176b52;--dark-green:#124436;--lime:#d8f277;
+  --paper:#f4f6f1;--card:#ffffff;--line:#e2e8e2;--red:#dc2626;--rbg:#fef2f2;
+  --gbg:#e6f4ea;--gink:#14532d;--gline:#bbf7d0;
+  --abg:#fffbeb;--aink:#78350f;--aline:#fcd34d;
+  --bbg:#eff6ff;--bink:#1e3a8a;--bline:#93c5fd;
+  --inp:#f7f9f6;
+}
+body.dark{
+  --ink:#e7f0ec;--muted:#94a8a0;--green:#229472;--dark-green:#0c2920;--lime:#d8f277;
+  --paper:#0f1c18;--card:#162923;--line:#253d35;--rbg:#3b1818;
+  --gbg:#143829;--gink:#dcfce7;--gline:#166534;
+  --abg:#3b2306;--aink:#fef3c7;--aline:#b45309;
+  --bbg:#172554;--bink:#dbeafe;--bline:#1d4ed8;
+  --inp:#11211c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Cairo','Segoe UI',Tahoma,sans-serif;
+  background:var(--paper);
+  color:var(--ink);display:flex;align-items:stretch;justify-content:center;padding:0;
+}
+.phone{
+  width:100%;max-width:100%;height:100%;
+  background:var(--paper);border-radius:0;overflow:hidden;
+  display:flex;flex-direction:column;position:relative;
+  box-shadow:none;
+}
+@media(min-width:700px){#ownerTripsContainer{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;align-items:start}#ownerTripsContainer>.card{margin-bottom:0}#ownerTripsContainer>details{grid-column:1/-1}}
+@media(min-width:960px){body{background:radial-gradient(circle at top,#1f4e40,#0c1f1a);padding:16px}.phone{max-width:760px;border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.45)}}
+.status-bar{display:none}
+.hd{background:var(--dark-green);color:#fff;padding:8px 16px 14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.08)}
+.hd-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{display:flex;align-items:center;gap:8px;font-size:21px;font-weight:800}
+.brandmark{
+  width:44px;height:44px;border-radius:13px;flex-shrink:0;background:var(--lime);
+  color:#124436;display:grid;place-items:center;font-size:19px;font-weight:800;
+}
+.brand small{font-size:11px;color:var(--lime);font-weight:700;display:block;line-height:1}
+.hd-actions{display:flex;align-items:center;gap:6px}
+.role-pill{white-space:nowrap;
+  background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.2);
+  border-radius:20px;padding:4px 10px;font:700 11px Cairo;cursor:pointer;text-decoration:none;
+}
+.icon-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);border:0;color:#fff;font-size:15px;cursor:pointer;display:grid;place-items:center}
+main{flex:1;overflow-y:auto;padding:14px 14px 20px}
+.scr{display:none}.scr.on{display:block;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+h2{font-size:13px;color:var(--muted);font-weight:700;margin:12px 0 8px}
+h2:first-child{margin-top:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:13px 14px;margin-bottom:10px}
+.btn{
+  border:0;border-radius:12px;padding:10px 14px;font:700 12.5px Cairo;
+  cursor:pointer;background:var(--green);color:#fff;width:100%;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s;
+}
+.btn.lime{background:var(--lime);color:#15352b}
+.btn.sec{background:var(--gbg);color:var(--green)}
+.btn.outline{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.search-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin-bottom:8px}
+.inp-box{background:var(--inp);border:1px solid var(--line);border-radius:12px;padding:6px 10px}
+.inp-box label{display:block;font-size:11px;color:var(--muted)}
+.inp-box input,.inp-box select{border:0;background:transparent;width:100%;font:700 13px Cairo;color:var(--ink);outline:0}
+.pref-tags{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.pref{border:1px solid var(--line);background:var(--inp);color:var(--ink);padding:6px 10px;border-radius:10px;font:600 11.5px Cairo;cursor:pointer}
+.pref.on{background:var(--gbg);border-color:var(--green);color:var(--green);font-weight:700}
+.set-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);gap:10px}
+.set-row:last-child{border-bottom:0}
+.set-row b{font-size:12.5px;display:block}
+.set-row small{font-size:11px;color:var(--muted);display:block}
+.sw{position:relative;width:40px;height:22px;flex-shrink:0;display:inline-block}
+.sw input{opacity:0;position:absolute;inset:0;z-index:1;cursor:pointer}
+.sw i{position:absolute;inset:0;background:#cbd5cf;border-radius:22px;transition:.2s}
+.sw i:before{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;right:3px;transition:.2s}
+.sw input:checked+i{background:var(--green)}
+.sw input:checked+i:before{transform:translateX(-18px)}
+nav{display:flex;background:var(--card);border-top:1px solid var(--line);padding:6px 6px calc(8px + env(safe-area-inset-bottom,0));flex-shrink:0}
+nav button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font:700 11px Cairo;color:var(--muted);cursor:pointer;padding:4px;position:relative}
+nav button span{font-size:19px}
+nav button.on{color:var(--green)}
+.nav-badge{position:absolute;top:3px;left:50%;transform:translateX(8px);background:var(--green);color:var(--lime);font-size:9.5px;font-weight:800;min-width:16px;height:16px;border-radius:10px;display:grid;place-items:center;padding:0 4px;line-height:1}
+.sheet-back{position:absolute;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;z-index:40}
+.sheet-back.open{display:flex}
+.sheet{background:var(--card);width:100%;border-radius:24px 24px 0 0;padding:16px 16px 22px;max-height:86%;overflow-y:auto}
+.chat-list{display:flex;flex-direction:column;gap:6px;max-height:150px;overflow-y:auto;background:var(--inp);padding:10px;border-radius:12px;margin:8px 0}
+.msg{padding:7px 10px;border-radius:10px;font-size:12px;max-width:85%;line-height:1.45}
+.msg.them{background:var(--card);border:1px solid var(--line);align-self:flex-start}
+.msg.me{background:var(--green);color:#fff;align-self:flex-end}
+.toast{position:absolute;bottom:76px;left:16px;right:16px;background:#15352b;color:#fff;padding:10px 14px;border-radius:12px;font-size:12px;font-weight:700;text-align:center;opacity:0;pointer-events:none;transform:translateY(10px);transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>5G 🔋 94%</span></div>
+  <header class="hd">
+    <div class="hd-row">
+      <div class="brand">
+        <div class="brandmark" style="background:#124436;border:1.5px solid rgba(216,242,119,.45);overflow:hidden;padding:0">
+          <img src="data:image/jpeg;base64,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" alt="صُحبة" style="width:100%;height:100%;object-fit:cover;display:block">
+        </div>
+        <div>صُحبة<small>الصحبة الصحبة</small></div>
+      </div>
+      <div class="hd-actions">
+        <button class="role-pill" id="langBtn" onclick="toggleLang()">🌐 EN</button>
+        <button class="role-pill" onclick="doOwnerLogout()" title="تسجيل الخروج">🚪 خروج</button>
+        <button class="icon-btn" id="hdrOwnerBell" onclick="showOwnerNotifications()" title="الإشعارات">🔔</button>
+        <button class="icon-btn" id="hdrOwnerRef" onclick="loadOwnerTripsFromServer(true)" title="تحديث">🔄</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- TAB 1: PUBLISH TRIP -->
+    <section class="scr on" id="publish">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 2px 10px;font-size:11.5px;color:var(--muted);font-weight:700">
+        <b id="pubTitle" style="color:var(--green);font-size:13px">انشر رحلتك وتقاسم تكلفة البنزين</b>
+        <span id="pubTag" style="color:var(--green)">حصتك كاملة كاش</span>
+      </div>
+
+      <div id="ownerKycGate"></div>
+      <div class="card" style="padding:12px" id="publishFormCard">
+
+        <div class="search-grid">
+          <div class="inp-box">
+            <label>من مدينة</label>
+            <select id="pFrom" onchange="updateCapHint()">
+              <option value="مرسى مطروح" selected>مرسى مطروح 🟢</option>
+              <option value="القاهرة">القاهرة 🟢</option>
+              <option value="الإسكندرية">الإسكندرية 🟢</option>
+              <option value="LOCKED" disabled>🔒 باقي المحافظات (قريباً)</option>
+            </select>
+          </div>
+          <span style="color:var(--green);font-weight:800">←</span>
+          <div class="inp-box">
+            <label>إلى مدينة</label>
+            <select id="pTo" onchange="updateCapHint()">
+              <option value="القاهرة" selected>القاهرة 🟢</option>
+              <option value="الإسكندرية">الإسكندرية 🟢</option>
+              <option value="مرسى مطروح">مرسى مطروح 🟢</option>
+              <option value="LOCKED" disabled>🔒 باقي المحافظات (قريباً)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+          <div class="inp-box"><label>يوم السفر</label><input type="date" id="pDate" value="2026-11-18" style="direction:ltr"></div>
+          <div class="inp-box"><label>ساعة التحرك</label><input type="time" id="pTime" value="09:00" style="direction:ltr"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+          <div class="inp-box"><label id="pSeatsLabel">الكراسي المتاحة</label>
+            <select id="pSeats">
+              <option value="1">كرسي واحد</option>
+              <option value="2">كرسيين</option>
+              <option value="3" selected>3 كراسي</option>
+            </select>
+          </div>
+          <div class="inp-box"><label id="pPriceLabel">مساهمة الفرد (أقصى ٤٠٠ ج)</label><input type="number" id="pPrice" value="350" max="400"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+          <div class="inp-box"><label>السيارة (موثقة 🔒)</label><input id="pCar" value="كيا سبورتاج ٢٠٢٤" readonly style="opacity:.85;cursor:not-allowed"></div>
+          <div class="inp-box"><label>نقطة التجمع</label><input id="pPickup" value="أمام محطة قطار مطروح"></div>
+        </div>
+
+        <div class="pref-tags" id="prefTags">
+          <button type="button" class="pref on" onclick="this.classList.toggle('on')">🚭 ممنوع التدخين</button>
+          <button type="button" class="pref on" onclick="this.classList.toggle('on')">❄️ تكييف</button>
+          <button type="button" class="pref" id="ladiesPrefBtn" onclick="this.classList.toggle('on')">👩🏻 سيدات وعائلات بس</button>
+        </div>
+
+        <div id="capHintBox" style="background:var(--gbg);color:var(--gink);border-radius:10px;padding:8px 10px;margin-bottom:8px;font-size:11px">
+          🛡️ توثيق رقمي لكل راكب (#SHB) لراحتك وأمانك طول الطريق.
+        </div>
+
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:10px;cursor:pointer">
+          <input type="checkbox" id="ownerLegalChk" checked style="accent-color:var(--green)">
+          <span>ملتزم بالميعاد وفحص السيارة، ومش هنقل أي طرود مجهولة.</span>
+        </label>
+
+        <button id="pubBtn" class="btn" onclick="submitPublish()">نشر الرحلة الآن</button>
+      </div>
+    </section>
+
+    <!-- TAB 2: MY TRIPS & PASSENGERS -->
+    <section class="scr" id="trips">
+      <h2>🚘 رحلاتي وإدارة الركاب</h2>
+      <div id="ownerTripsContainer"></div>
+    </section>
+
+    <!-- TAB 3: SETTINGS & CAR KYC -->
+    <section class="scr" id="settings">
+      <div class="card" style="display:flex;align-items:center;gap:12px">
+        <div style="width:50px;height:50px;border-radius:50%;background:var(--gbg);display:grid;place-items:center;font-size:24px">🚘</div>
+        <div style="flex:1">
+          <b id="dispName" style="font-size:15px">كريم عبد الرحمن</b>
+          <div style="font-size:11.5px;color:var(--green);font-weight:700">✓ بطاقة ورخصة قيادة موثقة (سيارة واحدة)</div>
+          <div style="font-size:11px;color:var(--muted)">لوحة: <b id="dispPlate">م و ث ١١١</b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="set-row">
+          <div><b>🌙 الوضع الليلي (Dark Mode)</b><small>تغيير مظهر التطبيق للوضع الداكن المريح</small></div>
+          <label class="sw"><input type="checkbox" onchange="document.body.classList.toggle('dark',this.checked)"><i></i></label>
+        </div>
+        <div class="set-row">
+          <div><b>🔔 إشعارات الحجوزات الجديدة</b><small>تنبيه فوري عند حجز مسافر لكرسي معك</small></div>
+          <label class="sw"><input type="checkbox" checked onchange="toast(this.checked?'تم تفعيل إشعارات الحجوزات':'تم إيقاف الإشعارات')"><i></i></label>
+        </div>
+        <div class="set-row">
+          <div><b>📍 مشاركة خط السير مع الأسرة</b><small>إرسال موقعك لرقم طوارئ الأسرة تلقائياً</small></div>
+          <label class="sw"><input type="checkbox" checked onchange="toast(this.checked?'تم تفعيل المشاركة التلقائية مع الأسرة':'تم إيقاف المشاركة')"><i></i></label>
+        </div>
+      </div>
+
+      <details class="card" style="padding:11px 13px;cursor:pointer">
+        <summary style="list-style:none;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:12.5px;color:var(--green)">
+          <span>🔒 بيانات السيارة الموثقة والطوارئ</span>
+          <span style="font-size:11px">عرض ▾</span>
+        </summary>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)">
+          <div class="inp-box" style="margin-bottom:7px;opacity:.8"><label>الاسم الموثق بالبطاقة 🔒</label><input id="setOwnerName" value="كريم عبد الرحمن" readonly></div>
+          <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:6px;margin-bottom:7px">
+            <div class="inp-box" style="opacity:.8"><label>السيارة الموثقة 🔒</label><input id="setOwnerCar" value="كيا سبورتاج ٢٠٢٤" readonly></div>
+            <div class="inp-box" style="opacity:.8"><label>رقم اللوحة 🔒</label><input id="setOwnerPlate" value="م و ث ١١١" readonly></div>
+          </div>
+          <button id="reverifyCarBtn" class="btn outline" style="margin-bottom:10px;font-size:11.5px;border-color:var(--green);color:var(--green)" onclick="requestCarReverification()">🔄 طلب تغيير السيارة / إعادة التوثيق بالصور</button>
+          <div class="inp-box" style="margin-bottom:8px"><label>رقم طوارئ الأسرة (قابل للتعديل)</label><input id="setOwnerSos" value="01098765432"></div>
+          <button class="btn" onclick="saveOwnerSettings()">💾 حفظ رقم الطوارئ</button>
+        </div>
+      </details>
+
+      <button class="btn" style="margin-bottom:8px;background:var(--dark-green);color:var(--lime)" onclick="openPoliciesSheet()">📜 سياسات وقواعد «صُحبة» الكاملة (اضغط للعرض)</button>
+
+      <div class="card" style="background:var(--rbg);border-color:#fca5a5">
+        <b style="font-size:12.5px;color:var(--red);display:block;margin-bottom:6px">🚨 طوارئ الطريق السريع</b>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+          <button class="btn outline" style="padding:6px;font-size:11px;border-color:#fca5a5;color:var(--red)" onclick="toast('🚓 اتصال بشرطة النجدة 122...')">🚓 النجدة 122</button>
+          <button class="btn outline" style="padding:6px;font-size:11px;border-color:#fca5a5;color:var(--red)" onclick="toast('🚑 اتصال بالإسعاف 123...')">🚑 الإسعاف 123</button>
+          <button class="btn outline" style="padding:6px;font-size:11px;border-color:#fca5a5;color:var(--red)" onclick="toast('🛣️ اتصال بإغاثة المرور 128...')">🛣️ المرور 128</button>
+        </div>
+      </div>
+
+      <button class="btn outline" onclick="doOwnerLogout()">🚪 تسجيل الخروج من الحساب</button>
+    </section>
+  </main>
+
+  <nav id="bottomNav">
+    <button class="on" data-tab="publish" onclick="go('publish')"><span>➕</span><em style="font-style:normal">انشر رحلة</em></button>
+    <button data-tab="trips" onclick="go('trips')"><span>🚘</span><em style="font-style:normal">رحلاتي والركاب</em><i class="nav-badge" id="navBadge">1</i></button>
+    <button data-tab="settings" onclick="go('settings')"><span>⚙️</span><em style="font-style:normal">الإعدادات</em></button>
+  </nav>
+
+  <div class="sheet-back" id="sheetBack" onclick="if(event.target===this)closeSheet()">
+    <div class="sheet" id="sheetContent"></div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+let CURRENT_OWNER = (typeof SohbaCore !== 'undefined') ? SohbaCore.getUser() : null;
+if (!CURRENT_OWNER || !CURRENT_OWNER.phone) {
+  window.location.replace('./صُحبة-التسجيل.html?mode=login');
+}
+let OWNER_TRIPS = [];
+let activeOwnerChatTripId = null;
+
+function doOwnerLogout() {
+  if (typeof SohbaCore !== 'undefined') SohbaCore.logout();
+  window.location.replace('./index.html');
+}
+
+function mapOwnerTrip(st) {
+  const myPhone = CURRENT_OWNER ? CURRENT_OWNER.phone : '';
+  return {
+    id: st.id,
+    from: st.from,
+    to: st.to,
+    depTime: st.time,
+    car: st.car,
+    plate: st.plate,
+    pickup: st.pickup,
+    seats: st.seats,
+    price: st.price,
+    tripStatus: st.status || 'scheduled',
+    gpsConfirmed: Boolean(st.gpsConfirmed),
+    isMine: true,
+    passengers: (st.bookings || []).filter(b => b.status !== 'cancelled').map((b, idx) => ({
+      id: idx + 1,
+      phone: b.passengerPhone,
+      name: b.passengerName + (b.status === 'boarded' ? ' ✅ ركب' : (b.status === 'mismatch_pending' ? ' ⚠️ بلاغ لوحة' : '')),
+      verified: true,
+      rating: '5.0',
+      status: b.status,
+      receiptStatus: b.receiptStatus || 'none',
+      bag: (b.bagDesc || 'شنطة') + ' · ' + (b.receiptStatus === 'approved' ? 'إيصال معتمد ✅' : (b.receiptStatus === 'rejected' ? 'إيصال مرفوض ❌' : 'إيصال قيد المراجعة ⏳')),
+      bagPhoto: true
+    })),
+    messages: (st.messages || []).map(m => ({
+      sender: m.senderPhone === myPhone ? 'me' : 'them',
+      text: (m.senderPhone !== myPhone && m.senderName ? m.senderName + ': ' : '') + m.text
+    }))
+  };
+}
+
+const ownerKycFiles = { nidUrl: '', selfieUrl: '', licenseUrl: '', carPhotoUrl: '' };
+
+function renderOwnerKycGate(u) {
+  const gate = document.getElementById('ownerKycGate');
+  const form = document.getElementById('publishFormCard');
+  if (!gate) return;
+  const docs = (u && u.kycDocs) || {};
+  const isApproved = u && u.verified && u.kycStatus === 'approved' && docs.nidUrl && docs.licenseUrl && docs.carPhotoUrl;
+  const stateKey = isApproved ? 'approved' : (u && u.kycStatus === 'pending' && docs.nidUrl && docs.licenseUrl && docs.carPhotoUrl ? 'pending' : 'upload_' + (u && u.kycStatus || 'none'));
+  if (gate.dataset.stateKey === stateKey) return;
+  gate.dataset.stateKey = stateKey;
+  if (isApproved) {
+    gate.innerHTML = '';
+    if (form) { form.style.opacity = '1'; form.style.pointerEvents = 'auto'; }
+    return;
+  }
+  if (form) { form.style.opacity = '.45'; form.style.pointerEvents = 'none'; }
+  if (u && u.kycStatus === 'pending' && docs.nidUrl && docs.licenseUrl && docs.carPhotoUrl) {
+    gate.innerHTML = `<div class="card" style="background:#fef3c7;border:1.5px solid #f59e0b;color:#92400e"><b>⏳ حسابك بانتظار اعتماد الإدارة</b><div style="font-size:11.5px;margin-top:4px">تم رفع البطاقة والرخصة وصورة السيارة باللوحة وجاري مراجعتها. ممنوع نشر رحلات قبل اعتماد الإدارة.</div></div>`;
+    return;
+  }
+  gate.innerHTML = `<div class="card" style="background:#fff1f2;border:1.5px solid #fca5a5">
+    <b style="color:#b91c1c;font-size:13px">🔒 توثيق السائق والسيارة بالصور (إلزامي)!</b>
+    <div style="font-size:11.5px;color:#7f1d1d;margin:4px 0 6px">${u && u.kycStatus === 'rejected' ? '❌ تم رفض المستندات السابقة' + (u.adminNote ? ' (' + u.adminNote + ')' : '') + ' — أعد الرفع:' : 'أدخل لون السيارة وحالة التكييف وارفع الـ 4 صور للمراجعة:'}</div>
+    <div style="background:#fff;border:1px solid #fecdd3;border-radius:8px;padding:6px 8px;font-size:10.5px;color:#182c28;margin-bottom:8px;line-height:1.55">
+      • 📸 <b>يجب أن تكون الصور واضحة ومقروءة بالكامل.</b><br>
+      • 🗑️ <b>يتم مسح الملفات والصور تلقائياً بعد ٣٠ يوماً</b> مع بقاء التوثيق الدائم لحسابك.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+      <input id="oCarColorInp" value="${(u&&u.carColor)||''}" placeholder="لون السيارة (مثال: فضي)" style="border:1px solid #fecdd3;border-radius:8px;padding:6px 8px;font:700 11.5px Cairo;background:#fff">
+      <select id="oCarAcSel" style="border:1px solid #fecdd3;border-radius:8px;padding:6px 8px;font:700 11.5px Cairo;background:#fff"><option value="1">❄️ التكييف شغال</option><option value="0">التكييف لا يعمل</option></select>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px">
+      <label style="display:flex;justify-content:space-between;background:#fff;border:1px dashed #fca5a5;border-radius:8px;padding:7px 10px;font-size:11.5px;cursor:pointer"><span>🪪 صورة البطاقة الشخصية</span><b id="oNidSt">${ownerKycFiles.nidUrl?'✓ اترفعت':'📸 اختر'}</b><input type="file" accept="image/*" style="display:none" onchange="uploadOwnerGateDoc('nidUrl','oNidSt',this)"></label>
+      <label style="display:flex;justify-content:space-between;background:#fff;border:1px dashed #fca5a5;border-radius:8px;padding:7px 10px;font-size:11.5px;cursor:pointer"><span>🤳 صورة سيلفي</span><b id="oSelfieSt">${ownerKycFiles.selfieUrl?'✓ اترفعت':'📸 التقط'}</b><input type="file" accept="image/*" capture="user" style="display:none" onchange="uploadOwnerGateDoc('selfieUrl','oSelfieSt',this)"></label>
+      <label style="display:flex;justify-content:space-between;background:#fff;border:1px dashed #fca5a5;border-radius:8px;padding:7px 10px;font-size:11.5px;cursor:pointer"><span>🚘 صورة رخصة القيادة والسيارة</span><b id="oLicSt">${ownerKycFiles.licenseUrl?'✓ اترفعت':'📸 اختر'}</b><input type="file" accept="image/*" style="display:none" onchange="uploadOwnerGateDoc('licenseUrl','oLicSt',this)"></label>
+      <label style="display:flex;justify-content:space-between;background:#fff;border:1px dashed #fca5a5;border-radius:8px;padding:7px 10px;font-size:11.5px;cursor:pointer"><span>🚗 صورة السيارة من الخارج باللوحة</span><b id="oCarSt">${ownerKycFiles.carPhotoUrl?'✓ اترفعت':'📸 اختر'}</b><input type="file" accept="image/*" style="display:none" onchange="uploadOwnerGateDoc('carPhotoUrl','oCarSt',this)"></label>
+    </div>
+    <button class="btn" style="background:#b91c1c" onclick="submitOwnerGateKyc()">إرسال المستندات وصورة السيارة للمراجعة ←</button>
+  </div>`;
+}
+
+async function uploadOwnerGateDoc(field, stId, input) {
+  const file = input && input.files && input.files[0];
+  if (!file) return;
+  const st = document.getElementById(stId);
+  if (st) st.textContent = '⏳...';
+  try {
+    ownerKycFiles[field] = await SohbaCore.uploadImage(file, 'owner_' + field);
+    if (st) st.textContent = '✓ اترفعت';
+  } catch (e) { if (st) st.textContent = '❌'; toast('❌ ' + e.message); }
+}
+
+async function submitOwnerGateKyc() {
+  const color = (document.getElementById('oCarColorInp')?.value || '').trim();
+  const acWorking = document.getElementById('oCarAcSel')?.value !== '0';
+  if (!color || !ownerKycFiles.nidUrl || !ownerKycFiles.selfieUrl || !ownerKycFiles.licenseUrl || !ownerKycFiles.carPhotoUrl) {
+    toast('📸 لازم تكتب لون السيارة وترفع الـ 4 صور (البطاقة + السيلفي + الرخصة + صورة السيارة باللوحة)!');
+    return;
+  }
+  try {
+    const res = await SohbaCore.api('/api/users/kyc', 'POST', {
+      phone: CURRENT_OWNER.phone,
+      carColor: color,
+      acWorking: acWorking,
+      nidUrl: ownerKycFiles.nidUrl,
+      selfieUrl: ownerKycFiles.selfieUrl,
+      licenseUrl: ownerKycFiles.licenseUrl,
+      carPhotoUrl: ownerKycFiles.carPhotoUrl
+    });
+    CURRENT_OWNER = res.user;
+    SohbaCore.saveUser(res.user);
+    renderOwnerKycGate(res.user);
+    toast('⏳ تم إرسال مستنداتك للإدارة — سيتم فتح النشر بعد المراجعة');
+  } catch (e) { toast('❌ ' + e.message); }
+}
+
+async function refreshOwnerProfile() {
+  if (!CURRENT_OWNER || !CURRENT_OWNER.phone) return;
+  try {
+    const res = await SohbaCore.api('/api/users/me?phone=' + encodeURIComponent(CURRENT_OWNER.phone));
+    if (res && res.user) {
+      CURRENT_OWNER = res.user;
+      SohbaCore.saveUser(res.user);
+      renderOwnerKycGate(res.user);
+    }
+  } catch (e) {}
+}
+
+async function loadOwnerTripsFromServer(showNotice) {
+  try {
+    await refreshOwnerProfile();
+    const res = await SohbaCore.api('/api/trips');
+    const myPhone = CURRENT_OWNER ? CURRENT_OWNER.phone : '';
+    OWNER_TRIPS = (res.trips || []).filter(t => t.driverPhone === myPhone).map(mapOwnerTrip);
+    document.getElementById('navBadge').textContent = OWNER_TRIPS.filter(t => t.tripStatus !== 'completed').length;
+    if (document.getElementById('trips').classList.contains('on')) renderOwnerTrips();
+    if (activeOwnerChatTripId && document.getElementById('sheetBack').classList.contains('open')) {
+      const t = OWNER_TRIPS.find(x => x.id === activeOwnerChatTripId);
+      const chatBox = document.getElementById('ownerChat_' + activeOwnerChatTripId);
+      if (t && chatBox) {
+        const html = t.messages.length ? t.messages.map(m => `<div class="msg ${m.sender}">${m.text}</div>`).join('') : '<div style="font-size:11.5px;color:var(--muted);text-align:center;padding:12px">لا توجد رسائل بعد</div>';
+        if (chatBox.dataset.count !== String(t.messages.length)) {
+          chatBox.innerHTML = html;
+          chatBox.dataset.count = String(t.messages.length);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      }
+    }
+    if (showNotice) toast('🔄 تم تحديث رحلاتك (' + OWNER_TRIPS.length + ')');
+  } catch (err) {
+    if (showNotice) toast('❌ ' + err.message);
+  }
+}
+
+function syncOwnerTrips() {}
+
+function initOwnerApp() {
+  if (typeof SohbaCore !== 'undefined') {
+    SohbaCore.registerSW();
+    if (SohbaCore.ICO) {
+      const nb = document.querySelectorAll('#bottomNav button span');
+      if (nb[0]) nb[0].innerHTML = SohbaCore.ICO.plus;
+      if (nb[1]) nb[1].innerHTML = SohbaCore.ICO.car;
+      if (nb[2]) nb[2].innerHTML = SohbaCore.ICO.settings;
+      const b1 = document.getElementById('hdrOwnerBell'); if (b1) b1.innerHTML = SohbaCore.ICO.bell;
+      const b2 = document.getElementById('hdrOwnerRef'); if (b2) b2.innerHTML = SohbaCore.ICO.refresh;
+    }
+    const u = SohbaCore.getUser();
+    if (u) {
+      CURRENT_OWNER = u;
+      const dn = document.getElementById('dispName'); if (dn && u.name) dn.textContent = u.name;
+      const sn = document.getElementById('setOwnerName'); if (sn && u.name) sn.value = u.name;
+      const pc = document.getElementById('pCar'); if (pc && u.car) pc.value = u.car;
+      const sc = document.getElementById('setOwnerCar'); if (sc && u.car) sc.value = u.car;
+      const dp = document.getElementById('dispPlate'); if (dp && u.plate) dp.textContent = u.plate;
+      const sp = document.getElementById('setOwnerPlate'); if (sp && u.plate) sp.value = u.plate;
+      const ss = document.getElementById('setOwnerSos'); if (ss && u.sos) ss.value = u.sos;
+      renderOwnerKycGate(u);
+    }
+    loadOwnerTripsFromServer(false);
+    SohbaCore.subscribeEvents(() => loadOwnerTripsFromServer(false));
+    setInterval(() => loadOwnerTripsFromServer(false), 15000);
+  }
+}
+
+let ownerTierMode = 'new';
+let editingTripId = null;
+let confirmCancelTripId = null;
+let confirmRemovePaxKey = null;
+let currentLang = 'ar';
+
+function tr(ar, en) { return currentLang === 'en' ? en : ar; }
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(window._tTimer);
+  window._tTimer = setTimeout(() => t.classList.remove('on'), 3000);
+}
+
+function go(tabId) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.toggle('on', s.id === tabId));
+  document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('on', b.dataset.tab === tabId));
+  if (tabId === 'trips') renderOwnerTrips();
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'ar' ? 'en' : 'ar';
+  const isEn = currentLang === 'en';
+  document.documentElement.dir = isEn ? 'ltr' : 'rtl';
+  document.documentElement.lang = isEn ? 'en' : 'ar';
+  const langBtn = document.getElementById('langBtn');
+  const navBtns = document.querySelectorAll('#bottomNav button');
+  const passengerLink = document.querySelector('.hd-actions a.role-pill');
+  const brandDiv = document.querySelector('.brand > div:last-child');
+  if (langBtn) langBtn.textContent = isEn ? '🌐 عربي' : '🌐 EN';
+  if (passengerLink) passengerLink.textContent = isEn ? '🎒 Passenger?' : '🎒 مسافر؟';
+  if (brandDiv) brandDiv.innerHTML = isEn ? 'Sohba<small>True Companionship</small>' : 'صُحبة<small>الصحبة الصحبة</small>';
+
+  const pubTag = document.getElementById('pubTag');
+  const pubBadge = document.getElementById('pubBadge');
+  const pubSteps = document.getElementById('pubSteps');
+  if (pubTag) pubTag.textContent = isEn ? '🚙 Travelling by car?' : '🚙 مسافر بعربيتك؟';
+  if (pubBadge) pubBadge.textContent = isEn ? '💚 100% Fuel Share (No Cut)' : '💚 حصتك كاملة كصاحب عربية';
+  if (pubSteps) pubSteps.textContent = isEn ? '1. Set route & time · 2. Confirm readiness · 3. Collect cash share' : '١. حدد المسار والميعاد · ٢. أكّد جاهزيتك قبل السفر · ٣. استلم حصتك كاش';
+  document.getElementById('pubTitle').textContent = isEn ? 'Publish Your Ride & Split Fuel' : 'انشر رحلتك وتقاسم تكلفة البنزين';
+  document.getElementById('pubBtn').textContent = isEn ? 'Publish Ride Now' : 'نشر الرحلة الآن';
+
+  // Translate selects & default values
+  const cityEn = {'مرسى مطروح':'Marsa Matrouh 🟢','القاهرة':'Cairo 🟢','الإسكندرية':'Alexandria 🟢','LOCKED':'🔒 Other Cities (Soon)'};
+  const cityAr = {'مرسى مطروح':'مرسى مطروح 🟢','القاهرة':'القاهرة 🟢','الإسكندرية':'الإسكندرية 🟢','LOCKED':'🔒 باقي المحافظات (قريباً)'};
+  ['pFrom','pTo'].forEach(sid => {
+    const sel = document.getElementById(sid);
+    if (sel) Array.from(sel.options).forEach(o => { o.textContent = (isEn ? cityEn : cityAr)[o.value] || o.textContent; });
+  });
+  const pSeats = document.getElementById('pSeats');
+  if (pSeats) {
+    const sEn = {'1':'1 Seat','2':'2 Seats','3':'3 Seats'}, sAr = {'1':'كرسي واحد','2':'كرسيين','3':'3 كراسي'};
+    Array.from(pSeats.options).forEach(o => { o.textContent = (isEn ? sEn : sAr)[o.value] || o.textContent; });
+  }
+  const pCar = document.getElementById('pCar');
+  if (pCar && (pCar.value === 'كيا سبورتاج ٢٠٢٤' || pCar.value === 'Kia Sportage 2024')) pCar.value = isEn ? 'Kia Sportage 2024' : 'كيا سبورتاج ٢٠٢٤';
+  const pPickup = document.getElementById('pPickup');
+  if (pPickup && (pPickup.value === 'أمام محطة قطار مطروح' || pPickup.value === 'Matrouh Train Station')) pPickup.value = isEn ? 'Matrouh Train Station' : 'أمام محطة قطار مطروح';
+
+  // Translate preference chips & cap hint
+  const prefs = document.querySelectorAll('#prefTags .pref');
+  if (prefs.length >= 3) {
+    prefs[0].textContent = isEn ? '🚭 No Smoking' : '🚭 ممنوع التدخين';
+    prefs[1].textContent = isEn ? '❄️ Air Conditioning' : '❄️ تكييف';
+    prefs[2].textContent = isEn ? '👩🏻 Ladies & Families Only' : '👩🏻 سيدات وعائلات بس';
+  }
+  const capBox = document.getElementById('capHintBox');
+  if (capBox) capBox.innerHTML = isEn ? '🛡️ Digital luggage verification (#SHB) for your peace of mind.' : '🛡️ توثيق رقمي لكل راكب (#SHB) لراحتك وأمانك طول الطريق.';
+
+  const tripsHeading = document.querySelector('#trips h2');
+  if (tripsHeading) tripsHeading.textContent = isEn ? '🚘 My Rides & Passengers' : '🚘 رحلاتي والركاب';
+  if (navBtns.length >= 3) {
+    navBtns[0].querySelector('em').textContent = isEn ? 'Publish' : 'انشر رحلة';
+    navBtns[1].querySelector('em').textContent = isEn ? 'My Rides' : 'رحلاتي والركاب';
+    navBtns[2].querySelector('em').textContent = isEn ? 'Settings' : 'الإعدادات';
+  }
+  const labels = document.querySelectorAll('#publish .inp-box label');
+  if (labels.length >= 8) {
+    const arL = ['من مدينة','إلى مدينة','يوم السفر','ساعة التحرك','الكراسي المتاحة','مساهمة الفرد (أقصى ٤٠٠ ج)','السيارة','نقطة التجمع'];
+    const enL = ['From City','To City','Travel Date','Departure Time','Available Seats','Seat Share (Max 400 EGP)','Car Model','Pickup Point'];
+    labels.forEach((el, i) => { if (arL[i]) el.textContent = isEn ? enL[i] : arL[i]; });
+  }
+  const chkSpan = document.querySelector('#ownerLegalChk + span');
+  if (chkSpan) chkSpan.textContent = isEn ? 'I commit to departure time, car safety check, and no unverified parcels.' : 'ملتزم بالميعاد وفحص السيارة، ومش هنقل أي طرود مجهولة.';
+
+  // Translate Settings tab
+  const dispName = document.getElementById('dispName');
+  if (dispName) dispName.textContent = isEn ? 'Karim Abdelrahman' : 'كريم عبد الرحمن';
+  const setRows = document.querySelectorAll('#settings .set-row');
+  if (setRows.length >= 2) {
+    setRows[0].querySelector('b').textContent = isEn ? '🌙 Dark Mode' : '🌙 الوضع الليلي (Dark Mode)';
+    setRows[0].querySelector('small').textContent = isEn ? 'Switch app theme to eye-friendly dark mode' : 'تغيير مظهر التطبيق للوضع الداكن';
+    setRows[1].querySelector('b').textContent = isEn ? '🚘 Car Model & Plate' : '🚘 موديل السيارة ورقم اللوحة';
+    setRows[1].querySelector('small').textContent = isEn ? 'Kia Sportage 2024 · Plate 111' : 'كيا سبورتاج ٢٠٢٤ · م و ث ١١١';
+  }
+  const setLinks = document.querySelectorAll('#settings a.btn');
+  if (setLinks.length >= 2) {
+    setLinks[0].textContent = isEn ? '📝 Registration & Policies' : '📝 صفحة التسجيل والتوثيق والسياسات';
+    setLinks[1].textContent = isEn ? '🎒 Switch to Passenger App' : '🎒 الانتقال لتطبيق المسافر';
+  }
+
+  renderOwnerTrips();
+  toast(isEn ? '🌐 Switched to English Mode' : '🌐 تم التبديل للغة العربية');
+}
+
+function formatArabicTime(time24) {
+  const parts = (time24 || '09:00').split(':');
+  let h = parseInt(parts[0], 10);
+  const m = parts[1] || '00';
+  const suffix = h >= 12 ? 'م' : 'ص';
+  if (h === 0) h = 12;
+  else if (h > 12) h -= 12;
+  return String(h).padStart(2, '0') + ':' + m + ' ' + suffix;
+}
+
+function updateCapHint() {
+  const f = document.getElementById('pFrom').value.trim() || 'مرسى مطروح';
+  const to = document.getElementById('pTo').value.trim() || 'القاهرة';
+  const cap = (f.includes('الإسكندرية') || to.includes('الإسكندرية')) ? 250 : 400;
+  const priceInp = document.getElementById('pPrice');
+  priceInp.max = cap;
+  priceInp.value = cap === 250 ? 220 : 350;
+  document.getElementById('pPriceLabel').textContent = `مساهمة الفرد (أقصى ${cap} ج)`;
+  document.getElementById('capHintBox').innerHTML = `🛡️ السقف الاسترشادي للخط ده <b>${cap} ج للفرد</b>، وتوثيق رقمي لكل راكب (#SHB) لراحتك وأمانك طول الطريق.`;
+}
+
+async function submitPublish() {
+  const docs = (CURRENT_OWNER && CURRENT_OWNER.kycDocs) || {};
+  if (!CURRENT_OWNER || !CURRENT_OWNER.verified || CURRENT_OWNER.kycStatus !== 'approved' || !docs.nidUrl || !docs.licenseUrl) {
+    toast('🔒 ممنوع نشر رحلات بدون رفع البطاقة والرخصة واعتمادها من الإدارة!');
+    return;
+  }
+  if (!document.getElementById('ownerLegalChk').checked) {
+    toast('⚠️ يرجى الموافقة على شروط الالتزام والسلامة أولاً');
+    return;
+  }
+  const f = document.getElementById('pFrom').value.trim();
+  const to = document.getElementById('pTo').value.trim();
+  if (f === to) { toast('⚠️ اختار مدينة وصول مختلفة'); return; }
+  if (!f.includes('مطروح') && !to.includes('مطروح')) { toast('🔒 قريباً! حالياً خطوط مطروح فقط'); return; }
+  if (OWNER_TRIPS.filter(t => t.tripStatus !== 'completed').length >= 2) { toast('🚫 الحد الأقصى رحلتين نشطتين يومياً (ذهاب وعودة) لنفس العربية!'); return; }
+
+  const depTimeFormatted = formatArabicTime(document.getElementById('pTime').value || '09:00');
+  const cap = (f.includes('الإسكندرية') || to.includes('الإسكندرية')) ? 250 : 400;
+  let price = parseInt(document.getElementById('pPrice').value, 10) || (cap === 250 ? 220 : 350);
+  if (price > cap) price = cap;
+  const seats = parseInt(document.getElementById('pSeats').value, 10) || 3;
+
+  try {
+    await SohbaCore.api('/api/trips', 'POST', {
+      driverPhone: CURRENT_OWNER.phone,
+      driverName: CURRENT_OWNER.name,
+      car: document.getElementById('pCar').value.trim() || CURRENT_OWNER.car,
+      plate: CURRENT_OWNER.plate,
+      from: f,
+      to: to,
+      date: document.getElementById('pDate')?.value || 'اليوم',
+      time: depTimeFormatted,
+      duration: (f.includes('الإسكندرية') || to.includes('الإسكندرية')) ? 'بعد ٣ ساعات' : 'بعد ٥ ساعات',
+      seats: seats,
+      price: price,
+      pickup: document.getElementById('pPickup').value.trim() || 'نقطة التجمع',
+      noSmoking: true,
+      ac: true
+    });
+    await loadOwnerTripsFromServer(false);
+    go('trips');
+    toast('🎉 تم نشر رحلتك على السيرفر وظهرت الآن لجميع المسافرين!');
+  } catch (err) {
+    toast('❌ ' + err.message);
+  }
+}
+
+function hasBlockedContactInfo(raw) {
+  if (!raw || typeof raw !== 'string') return false;
+  let s = raw.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[oO](?=\d)/g, '0').replace(/(\d)[oO]/g, '$10');
+  if (/(واتس|واتساب|الواتس|whatsapp|whats\s*app|wa\.me|تليجرام|تيليجرام|تلجرام|telegram|t\.me|فيسبوك|فيس\s*بوك|facebook|fb\.com|انستا|انستجرام|instagram|ماسنجر|messenger)/i.test(s)) return true;
+  if (/زيرو\s*(?:عشر[ةه]?|حد[اإ]شر|اتن[اإ]شر|خمسط[اإ]شر)|صفر\s*واحد\s*(?:صفر|واحد|اتنين|خمس[ةه])|\b01[0125]\b/i.test(s)) return true;
+  let w = s.toLowerCase()
+    .replace(/زيرو\s*عشر[ةه]?/g,'010').replace(/زيرو\s*حد[اإ]شر/g,'011').replace(/زيرو\s*اتن[اإ]شر/g,'012').replace(/زيرو\s*خمسط[اإ]شر/g,'015')
+    .replace(/عشر[ةه]/g,'10').replace(/حد[اإ]شر/g,'11').replace(/اتن[اإ]شر/g,'12').replace(/تلات[اإ]شر/g,'13').replace(/أربعتاشر/g,'14').replace(/خمسط[اإ]شر/g,'15')
+    .replace(/زيرو|صفر/g,'0').replace(/واحد/g,'1').replace(/اتنين|إثنين/g,'2').replace(/تلات[ةه]|ثلاث[ةه]/g,'3').replace(/اربع[ةه]|أربع[ةه]/g,'4')
+    .replace(/خمس[ةه]/g,'5').replace(/ست[ةه]/g,'6').replace(/سبع[ةه]/g,'7').replace(/تَ?ماني[ةه]|تمنية/g,'8').replace(/تسع[ةه]/g,'9');
+  const d1 = s.replace(/\D/g, ''), d2 = w.replace(/\D/g, '');
+  if (/(?:01[0125]\d{2,}|201[0125]\d{2,})/.test(d1) || /(?:01[0125]\d{2,}|201[0125]\d{2,})/.test(d2)) return true;
+  if (d1.length >= 5 || d2.length >= 5) return true;
+  if (/(رقمي|نمرتي|موبايلي|فون|هات رقمك|ابعت رقمك|كلمنا فون|كلمني خاص|تواصل خاص)/i.test(s)) return true;
+  return false;
+}
+
+function openPassengerChat(tripId) {
+  const t = OWNER_TRIPS.find(x => x.id === tripId);
+  if (!t) return;
+  activeOwnerChatTripId = tripId;
+  document.getElementById('sheetContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <b style="font-size:15px">💬 شات الرحلة (${t.from} ← ${t.to})</b>
+      <button onclick="activeOwnerChatTripId=null;closeSheet()" style="border:0;background:var(--inp);color:var(--ink);width:28px;height:28px;border-radius:8px;font-size:16px;cursor:pointer">×</button>
+    </div>
+    <div class="chat-list" id="ownerChat_${t.id}">${t.messages.length ? t.messages.map(m => `<div class="msg ${m.sender}">${m.text}</div>`).join('') : '<div style="font-size:11.5px;color:var(--muted);text-align:center;padding:12px">لا توجد رسائل بعد</div>'}</div>
+    <div style="display:flex;gap:6px">
+      <input id="ownerInp_${t.id}" placeholder="اكتب رسالة للراكب (تبادل الأرقام محظور 🛡️)..." style="flex:1;border:1px solid var(--line);background:var(--inp);color:var(--ink);border-radius:9px;padding:7px 10px;font:11.5px Cairo" onkeydown="if(event.key==='Enter')sendOwnerMsg(${t.id})">
+      <button class="btn" style="width:auto;padding:7px 12px" onclick="sendOwnerMsg(${t.id})">إرسال</button>
+    </div>`;
+  document.getElementById('sheetBack').classList.add('open');
+}
+
+async function sendOwnerMsg(tripId) {
+  const inp = document.getElementById('ownerInp_' + tripId);
+  const txt = (inp?.value || '').trim();
+  if (!txt) return;
+  const t = OWNER_TRIPS.find(x => x.id === tripId);
+  const lastMe = [...(t?.messages || [])].reverse().find(m => m.sender === 'me');
+  const combined = (lastMe ? lastMe.text + ' ' : '') + txt;
+  if (hasBlockedContactInfo(txt) || hasBlockedContactInfo(combined)) {
+    inp.style.borderColor = '#dc2626';
+    toast('🛡️ درع صُحبة الذكي: يُمنع تبادل أرقام الهواتف أو وسائل التواصل الخارجي!');
+    return;
+  }
+  inp.style.borderColor = '';
+  inp.value = '';
+  try {
+    await SohbaCore.api('/api/trips/' + tripId + '/messages', 'POST', {
+      senderPhone: CURRENT_OWNER.phone,
+      senderName: CURRENT_OWNER.name,
+      senderRole: 'owner',
+      text: txt
+    });
+    await loadOwnerTripsFromServer(false);
+    const chatBox = document.getElementById('ownerChat_' + tripId);
+    if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+    if (inp) inp.focus();
+  } catch (err) {
+    toast('❌ ' + err.message);
+  }
+}
+
+function showOwnerNotifications() {
+  const totalMsgs = OWNER_TRIPS.reduce((s, t) => s + (t.messages || []).length, 0);
+  const totalPax = OWNER_TRIPS.reduce((s, t) => s + (t.passengers || []).length, 0);
+  toast(`🔔 لديك ${totalPax} ركاب محجوزين و ${totalMsgs} رسائل في شات رحلاتك`);
+}
+
+function requestCarReverification() {
+  document.getElementById('sheetContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <b style="font-size:15px">🚘 طلب تغيير السيارة وإعادة التوثيق</b>
+      <button onclick="closeSheet()" style="border:0;background:var(--inp);color:var(--ink);width:28px;height:28px;border-radius:8px;font-size:16px;cursor:pointer">×</button>
+    </div>
+    <div class="inp-box" style="margin-bottom:8px"><label>موديل السيارة الجديد</label><input id="newCarInp" placeholder="مثال: نيسان صني 2024"></div>
+    <div class="inp-box" style="margin-bottom:8px"><label>رقم اللوحة الجديدة</label><input id="newPlateInp" placeholder="مثال: س ن د 1234"></div>
+    <label style="display:flex;justify-content:space-between;background:var(--inp);border:1.5px dashed var(--green);border-radius:10px;padding:9px 12px;margin-bottom:10px;cursor:pointer;font-size:12px">
+      <span>📸 صورة رخصة السيارة الجديدة (إلزامي)</span>
+      <b id="newLicSt">اختر صورة</b>
+      <input type="file" accept="image/*" style="display:none" onchange="uploadNewCarLic(this)">
+    </label>
+    <button class="btn" onclick="submitCarChange()">إرسال لمراجعة الإدارة ←</button>`;
+  window._newCarLicUrl = '';
+  document.getElementById('sheetBack').classList.add('open');
+}
+
+async function uploadNewCarLic(input) {
+  const f = input && input.files && input.files[0];
+  if (!f) return;
+  const st = document.getElementById('newLicSt');
+  if (st) st.textContent = '⏳...';
+  try {
+    window._newCarLicUrl = await SohbaCore.uploadImage(f, 'car_change_lic');
+    if (st) st.textContent = '✓ تم الرفع';
+  } catch (e) { if (st) st.textContent = '❌'; toast('❌ ' + e.message); }
+}
+
+async function submitCarChange() {
+  const car = (document.getElementById('newCarInp')?.value || '').trim();
+  const plate = (document.getElementById('newPlateInp')?.value || '').trim();
+  if (!car || !plate || !window._newCarLicUrl) {
+    toast('⚠️ أدخل الموديل واللوحة وارفع صورة الرخصة الجديدة');
+    return;
+  }
+  try {
+    const res = await SohbaCore.api('/api/users/car-change', 'POST', {
+      phone: CURRENT_OWNER.phone, car, plate, licenseUrl: window._newCarLicUrl
+    });
+    CURRENT_OWNER = res.user;
+    SohbaCore.saveUser(res.user);
+    closeSheet();
+    renderOwnerKycGate(res.user);
+    toast('⏳ تم إرسال طلب تغيير السيارة للإدارة للمراجعة');
+  } catch (e) { toast('❌ ' + e.message); }
+}
+
+async function saveOwnerSettings() {
+  const sos = SohbaCore.normalizeDigits(document.getElementById('setOwnerSos').value);
+  if (!SohbaCore.isValidEgyptianPhone(sos)) { toast(tr('⚠️ اكتب رقم طوارئ مصري صحيح','⚠️ Enter valid Egyptian emergency phone')); return; }
+  try {
+    const res = await SohbaCore.api('/api/users/sos', 'POST', { phone: CURRENT_OWNER.phone, sos });
+    CURRENT_OWNER = res.user;
+    SohbaCore.saveUser(res.user);
+    toast(tr('✅ تم حفظ رقم طوارئ الأسرة على السيرفر','✅ Emergency contact saved'));
+  } catch (e) { toast('❌ ' + e.message); }
+}
+
+function openPoliciesSheet() {
+  document.getElementById('sheetContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <b style="font-size:15px">📜 ${tr('سياسات وقواعد صُحبة (اضغط على أي بند للتفاصيل)','Sohba Policies (Tap any item for details)')}</b>
+      <button onclick="closeSheet()" style="border:0;background:var(--inp);color:var(--ink);width:28px;height:28px;border-radius:8px;font-size:16px;cursor:pointer">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:11.5px;line-height:1.6">
+      <details style="background:var(--inp);border:1px solid var(--line);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;color:var(--green);display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>١. ${tr('التكييف القانوني (مشاركة تكلفة البنزين)','1. Legal Model (Fuel Cost-Sharing)')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);color:var(--ink)">
+          ${tr('• «صُحبة» منصة وساطة تقنية للربط بين المسافرين وأصحاب السيارات الملاكي لتقاسم مصاريف البنزين والطريق فقط، وليست شركة نقل ركاب أو تاكسي.<br>• يُسمح لصاحب العربية بنشر حد أقصى رحلتين يومياً (ذهاب وعودة) لنفس السيارة المسجلة، وتذهب ١٠٠٪ من مساهمة الكرسي لصاحب العربية بدون أي استقطاع.','• Sohba is a peer-to-peer fuel cost-sharing platform (not a commercial taxi).<br>• Owners may publish max 2 rides/day (round trip) with 100% of the seat share going directly to the owner.')}
+        </div>
+      </details>
+
+      <details style="background:var(--inp);border:1px solid var(--line);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;color:var(--green);display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>٢. ${tr('توثيق الأمتعة ومنع الطرود المجهولة (#SHB)','2. Luggage Verification & Parcel Ban (#SHB)')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);color:var(--ink)">
+          ${tr('• يُحظر نهائياً نقل أي طرود أو أمانات بدون صاحبها داخل السيارة، ويمتنع صاحب العربية عن استلام أي شحنة غير مصحوبة براكبها.<br>• يوثق المسافر حجم وصورة شنطته عند الحجز ويصدر له كود توثيق رقمي (#SHB) يثبت حيازته الشخصية لأمتعته طوال الرحلة.','• Unattended parcels or deliveries are strictly prohibited.<br>• Passengers declare and photograph their luggage to receive a digital #SHB verification code.')}
+        </div>
+      </details>
+
+      <details style="background:var(--bbg);border:1px solid var(--bline);color:var(--bink);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>٣. ${tr('الخصوصية وحذف المستندات خلال ٣٠ يوماً','3. Privacy & 30-Day Auto-Purge')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--bline)">
+          ${tr('• تُشفر صور البطاقة ورخص القيادة والسيارة فور رفعها للمراجعة الأمنية فقط، ولا يطّلع عليها أي مستخدم آخر.<br>• تُحذف الصور تلقائياً ونهائياً من السيرفرات بعد ٣٠ يوماً من إتمام التوثيق مع بقاء شارة الحساب الموثق.','• ID and license photos are encrypted strictly for verification and never shared with users.<br>• All document images are permanently purged after 30 days while keeping your verified badge.')}
+        </div>
+      </details>
+
+      <details style="background:var(--abg);border:1px solid var(--aline);color:var(--aink);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>٤. ${tr('سياسة الإلغاء ومهلة الانتظار ١٥ دقيقة','4. Cancellation Policy & 15-Min Grace')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--aline)">
+          ${tr('• إلغاء المسافر قبل الموعد بـ +٣ ساعات = استرداد ١٠٠٪ من العربون.<br>• أقل من ٣ ساعات = استرداد ٥٠٪ (والنصف الآخر تعويض لصاحب العربية).<br>• إلغاء صاحب العربية أو اختلاف اللوحة = استرداد ١٠٠٪ فوراً للمسافر.<br>• مهلة الانتظار في نقطة التجمع ١٥ دقيقة فقط التزاماً بمواعيد الجميع.','• 3h+ cancel = 100% refund · under 3h = 50% refund · owner cancel = 100% refund.<br>• Maximum wait time at pickup is 15 minutes.')}
+        </div>
+      </details>
+
+      <details style="background:var(--inp);border:1px solid var(--line);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;color:var(--green);display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>٥. ${tr('درع الشات الذكي وحماية البيانات 🛡️','5. Smart Chat Shield & Data Safety 🛡️')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);color:var(--ink)">
+          ${tr('• يعمل درع الشات تلقائياً من النظام لحجب أرقام الهواتف أو روابط التواصل الخارجي (واتساب/فيسبوك/تليجرام) لحماية خصوصيتك وضمان التغطية القانونية للرحلة.<br>• تظل لوحة السيارة مخفية عن المسافر ولا تظهر إلا بعد تأكيد الحجز.','• The system automatically blocks phone numbers and external links in chat.<br>• Car plate numbers remain hidden until booking is confirmed.')}
+        </div>
+      </details>
+    </div>
+    <button class="btn" style="margin-top:10px" onclick="closeSheet()">${tr('فهمت، إغلاق','Got it, Close')}</button>`;
+  document.getElementById('sheetBack').classList.add('open');
+}
+
+function closeSheet() { activeOwnerChatTripId = null; document.getElementById('sheetBack').classList.remove('open'); }
+
+async function verifyPassengerBoardingCode(tripId, paxPhone) {
+  const code = (prompt('🔐 اطلب من المسافر كود التذكرة المكون من 4 أرقام (#SHB-xxxx):') || '').trim();
+  if (!code) return;
+  try {
+    await SohbaCore.api('/api/trips/' + tripId + '/checkin', 'POST', {
+      passengerPhone: paxPhone,
+      boardingCode: code,
+      verifiedByDriver: true
+    });
+    await loadOwnerTripsFromServer(false);
+    toast('✅ تم مطابقة الكود وتأكيد ركوب المسافر!');
+  } catch (e) { toast('❌ ' + e.message); }
+}
+
+async function ratePassengerServer(tripId, paxPhone) {
+  try {
+    await SohbaCore.api('/api/trips/' + tripId + '/rate-passenger', 'POST', { passengerPhone: paxPhone, rating: 5 });
+    toast(tr('⭐ تم تسجيل تقييم 5 نجوم للراكب على السيرفر!', '⭐ Passenger rated 5 stars!'));
+  } catch (e) { toast('❌ ' + e.message); }
+}
+async function confirmGps(id) {
+  try {
+    await SohbaCore.api('/api/trips/' + id + '/status', 'POST', { action: 'ready' });
+    await loadOwnerTripsFromServer(false);
+    toast('✅ تم تأكيد جاهزيتك بالـ GPS وإشعار المسافرين!');
+  } catch (e) { toast('❌ ' + e.message); }
+}
+async function startOwnerTrip(id) {
+  try {
+    await SohbaCore.api('/api/trips/' + id + '/status', 'POST', { action: 'start' });
+    await loadOwnerTripsFromServer(false);
+    toast('🚀 بدأت الرحلة! توصلوا بالسلامة');
+  } catch (e) { toast('❌ ' + e.message); }
+}
+async function completeOwnerTrip(id) {
+  try {
+    await SohbaCore.api('/api/trips/' + id + '/status', 'POST', { action: 'complete' });
+    await loadOwnerTripsFromServer(false);
+    toast('🏁 حمد لله على السلامة! تم تسجيل إتمام الرحلة بنجاح');
+  } catch (e) { toast('❌ ' + e.message); }
+}
+async function removePassenger(tripId, paxPhone) {
+  confirmRemovePaxKey = null;
+  try {
+    await SohbaCore.api('/api/trips/' + tripId + '/remove-passenger', 'POST', { passengerPhone: paxPhone });
+    await loadOwnerTripsFromServer(false);
+    toast(tr('تم استبعاد الراكب ورد العربون له', 'Passenger removed & deposit refunded'));
+  } catch (e) { toast('❌ ' + e.message); }
+}
+async function saveTime(id) {
+  const v = document.getElementById('et_' + id)?.value;
+  if (!v) return;
+  try {
+    await SohbaCore.api('/api/trips/' + id + '/status', 'POST', { action: 'update_time', time: formatArabicTime(v) });
+    editingTripId = null;
+    await loadOwnerTripsFromServer(false);
+    toast(tr('✅ تم تحديث الميعاد', '✅ Time updated'));
+  } catch (e) { toast('❌ ' + e.message); }
+}
+async function cancelTrip(id) {
+  confirmCancelTripId = null;
+  try {
+    await SohbaCore.api('/api/trips/' + id + '/cancel', 'POST', { byOwner: true });
+    await loadOwnerTripsFromServer(false);
+    toast(tr('تم إلغاء الرحلة ورد العربون للركاب', 'Ride cancelled & passengers refunded'));
+  } catch (e) { toast('❌ ' + e.message); }
+}
+
+function renderOwnerTrips() {
+  const box = document.getElementById('ownerTripsContainer');
+  const active = OWNER_TRIPS.filter(t => t.tripStatus !== 'completed');
+  const past = OWNER_TRIPS.filter(t => t.tripStatus === 'completed');
+  if (!OWNER_TRIPS.length) {
+    box.innerHTML = `<div class="card" style="text-align:center;padding:24px"><b>${tr('لسه منشرتش رحلات','No published rides yet')}</b><button class="btn" style="margin-top:10px" onclick="go('publish')">${tr('➕ انشر رحلة الآن','➕ Publish a Ride')}</button></div>`;
+    return;
+  }
+  const renderCard = (t) => `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:12px;background:var(--gbg);color:var(--green)">
+          ${tr('⭐ صاحب عربية موثق','⭐ Verified Car Owner')}
+        </span>
+        <b style="color:var(--green)">${t.price} ${tr('ج.م / للفرد','EGP / seat')}</b>
+      </div>
+      <b style="font-size:14px;display:block">${t.from} ← ${t.to} (${t.depTime})</b>
+      <div style="font-size:11.5px;color:var(--muted);margin:4px 0 8px">📍 ${tr('التجمع:','Pickup:')} ${t.pickup} <button onclick="SohbaCore.openGoogleMaps('${t.pickup}','${t.from}')" style="border:1px solid var(--green);background:var(--card);color:var(--green);border-radius:6px;padding:1px 6px;font:700 10px Cairo;cursor:pointer">${tr('🗺️ خريطة','🗺️ Map')}</button> · ${tr('باقي','Left:')} ${t.seats} ${tr('كراسي','seats')}</div>
+
+      <div style="background:var(--inp);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px">
+        <b style="font-size:11.5px;color:var(--green);display:block;margin-bottom:5px">👥 ${tr('الركاب المحجوزين','Booked Passengers')} (${t.passengers.length}):</b>
+        ${t.passengers.length ? t.passengers.map(p => {
+          const rKey = t.id + '_' + p.id;
+          return confirmRemovePaxKey === rKey ? `
+            <div style="background:var(--rbg);border:1px solid #fca5a5;border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:11px;display:flex;justify-content:space-between;align-items:center">
+              <b style="color:var(--red)">${tr('تأكيد استبعاد','Remove')} ${p.name}؟</b>
+              <div style="display:flex;gap:4px">
+                <button onclick="removePassenger(${t.id},'${p.phone}')" style="border:0;background:var(--red);color:#fff;border-radius:6px;padding:3px 8px;font:700 10px Cairo;cursor:pointer">${tr('تأكيد','Confirm')}</button>
+                <button onclick="confirmRemovePaxKey=null;renderOwnerTrips()" style="border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:3px 8px;font:700 10px Cairo;cursor:pointer">${tr('تراجع','Back')}</button>
+              </div>
+            </div>
+          ` : `
+          <div style="display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:11px">
+            <div><b>${p.name}</b> 🛡️ · ⭐ ${p.rating}<br><span style="color:var(--muted);font-size:10px">🧳 ${p.bag} ✓</span></div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap">
+              ${p.status === 'booked' ? `<button onclick="verifyPassengerBoardingCode(${t.id},'${p.phone}')" style="border:1px solid #0284c7;background:#e0f2fe;color:#0369a1;border-radius:6px;padding:3px 7px;font:700 10px Cairo;cursor:pointer">🔐 كود الركوب</button>` : ''}
+              <button onclick="ratePassengerServer(${t.id},'${p.phone}')" style="border:1px solid #f59e0b;background:var(--abg);color:var(--aink);border-radius:6px;padding:3px 7px;font:700 10px Cairo;cursor:pointer">⭐ ${tr('قيّم','Rate')}</button>
+              <button onclick="openPassengerChat(${t.id})" style="border:1px solid var(--green);background:var(--gbg);color:var(--green);border-radius:6px;padding:3px 8px;font:700 10.5px Cairo;cursor:pointer">💬 ${tr('شات','Chat')}</button>
+              <button onclick="confirmRemovePaxKey='${rKey}';renderOwnerTrips()" style="border:1px solid #fecdd3;background:#fff1f2;color:var(--red);border-radius:6px;padding:3px 7px;font:700 10.5px Cairo;cursor:pointer">✕</button>
+            </div>
+          </div>`;
+        }).join('') : `<div style="font-size:11px;color:var(--muted)">${tr('في انتظار حجز ركاب...','Waiting for passengers...')}</div>`}
+      </div>
+
+      <button class="btn sec" style="margin-bottom:6px;background:var(--gbg);color:var(--green);border:1px solid var(--green)" onclick="openPassengerChat(${t.id})">💬 ${tr('شات الرحلة والأسئلة','Trip Chat')} (${t.messages.length})</button>
+
+      ${t.tripStatus === 'completed'
+        ? `<div style="background:var(--gbg);color:var(--gink);padding:9px;border-radius:9px;font-size:11.5px;font-weight:800;text-align:center;margin-bottom:6px">🏁 تم إتمام الرحلة والوصول بالسلامة!</div>`
+        : t.tripStatus === 'in_progress'
+          ? `<button class="btn" style="background:#15803d;margin-bottom:6px" onclick="completeOwnerTrip(${t.id})">🏁 وصلنا بالسلامة — إنهاء الرحلة</button>`
+          : (t.tripStatus === 'ready' || t.gpsConfirmed)
+            ? `<button class="btn" style="background:#0284c7;margin-bottom:6px" onclick="startOwnerTrip(${t.id})">🚀 انطلقت الرحلة الآن (في الطريق)</button>`
+            : `<button class="btn" style="margin-bottom:6px" onclick="confirmGps(${t.id})">${tr('📍 أنا جاهز ومتحرك (تأكيد الـ GPS قبل ٣ ساعات)','📍 Confirm Readiness via GPS (3h before)')}</button>`}
+
+      ${confirmCancelTripId === t.id ? `
+        <div style="background:var(--rbg);border:1px solid #fca5a5;border-radius:10px;padding:8px;font-size:11px">
+          <b style="color:var(--red);display:block;margin-bottom:5px">⚠️ ${tr('متأكد من إلغاء الرحلة بالكامل؟ (سيتم رد العربون للركاب)','Are you sure you want to cancel this ride? (Passengers will be refunded)')}</b>
+          <div style="display:flex;gap:6px">
+            <button class="btn" style="background:var(--red);padding:6px" onclick="cancelTrip(${t.id})">${tr('تأكيد الإلغاء','Confirm Cancel')}</button>
+            <button class="btn outline" style="padding:6px" onclick="confirmCancelTripId=null;renderOwnerTrips()">${tr('تراجع','Back')}</button>
+          </div>
+        </div>
+      ` : editingTripId === t.id
+        ? `<div style="display:flex;gap:6px"><input type="time" id="et_${t.id}" value="10:00" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:4px"><button class="btn" style="width:auto;padding:5px 10px" onclick="saveTime(${t.id})">${tr('حفظ','Save')}</button><button class="btn outline" style="width:auto;padding:5px 8px" onclick="editingTripId=null;renderOwnerTrips()">${tr('تراجع','Back')}</button></div>`
+        : `<div style="display:flex;gap:6px"><button class="btn outline" style="flex:1;padding:6px;font-size:11px" onclick="editingTripId=${t.id};renderOwnerTrips()">${tr('✏️ تعديل الميعاد','✏️ Edit Time')}</button><button class="btn outline" style="flex:1;padding:6px;font-size:11px;color:var(--red);border-color:#fecdd3" onclick="confirmCancelTripId=${t.id};renderOwnerTrips()">${tr('🗑️ إلغاء الرحلة','🗑️ Cancel Ride')}</button></div>`}
+    </div>`;
+  let html = active.length ? active.map(renderCard).join('') : `<div class="card" style="text-align:center;padding:18px"><b>${tr('لا توجد رحلات حالية','No active rides')}</b><button class="btn" style="margin-top:8px" onclick="go('publish')">${tr('➕ انشر رحلة جديدة','➕ Publish New Ride')}</button></div>`;
+  if (past.length) {
+    html += `<details style="margin-top:10px"><summary style="cursor:pointer;font:800 13px Cairo;color:var(--muted);padding:8px 4px">📜 ${tr('الرحلات السابقة','Previous Trips')} (${past.length})</summary><div style="margin-top:6px">${past.map(renderCard).join('')}</div></details>`;
+  }
+  box.innerHTML = html;
+}
+
+initOwnerApp();
+renderOwnerTrips();
+</script>
+</body>
+</html>

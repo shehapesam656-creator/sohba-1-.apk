@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: sohba-app-server
+    env: node
+    plan: free
+    rootDir: .
+    buildCommand: "echo Ready"
+    startCommand: "node sohba-server/server.js"
+    envVars:
+      - key: PORT
+        value: 3000

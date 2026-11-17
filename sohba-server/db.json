@@ -1,0 +1,191 @@
+{
+  "users": [
+    {
+      "id": 1794937312196,
+      "name": "شهاب عصام محمد",
+      "phone": "01040988494",
+      "password": "free1234??",
+      "sos": "01012787857",
+      "role": "passenger",
+      "car": "",
+      "plate": "",
+      "verified": true,
+      "rating": 5,
+      "ridesCount": 0,
+      "walletBalance": 0,
+      "createdAt": "2026-11-17T17:41:52.196Z",
+      "kycStatus": "approved",
+      "adminNote": "",
+      "kycDocs": {
+        "nidUrl": "/uploads/kyc_nid_1794942476620_265.jpg",
+        "selfieUrl": "/uploads/kyc_selfie_1794942494174_951.jpg"
+      }
+    },
+    {
+      "id": 1794938491682,
+      "name": "نامز انبا التزل",
+      "phone": "01011119433",
+      "password": "free1234",
+      "sos": "01012163038",
+      "role": "owner",
+      "car": "فيرنا",
+      "plate": "ج و د ٤٤٤٤",
+      "verified": true,
+      "rating": 5,
+      "ridesCount": 1,
+      "walletBalance": 0,
+      "createdAt": "2026-11-17T18:01:31.682Z",
+      "kycDocs": {
+        "nidUrl": "/uploads/owner_nidUrl_1794944094716_66.jpg",
+        "selfieUrl": "/uploads/owner_selfieUrl_1794944033085_573.jpg",
+        "licenseUrl": "/uploads/owner_licenseUrl_1794944112850_419.jpg"
+      },
+      "kycStatus": "approved",
+      "adminNote": ""
+    },
+    {
+      "id": 1794951327834,
+      "name": "شهاب عصام محمد",
+      "phone": "01012163038",
+      "password": "free1234??",
+      "sos": "",
+      "role": "owner",
+      "car": "فيرنا",
+      "plate": "س ن د ٤٣٢١",
+      "kycDocs": {
+        "nidUrl": "/uploads/owner_nidUrl_1794951793179_424.jpg",
+        "selfieUrl": "/uploads/owner_selfieUrl_1794951798010_776.jpg",
+        "licenseUrl": "/uploads/owner_licenseUrl_1794951805645_294.jpg",
+        "carPhotoUrl": "/uploads/owner_carPhotoUrl_1794951812675_42.jpg"
+      },
+      "kycStatus": "approved",
+      "verified": true,
+      "banned": false,
+      "adminNote": "",
+      "rating": 5,
+      "ridesCount": 0,
+      "completedRides": 0,
+      "hasSohbaPass": false,
+      "walletBalance": 0,
+      "usedPromos": [],
+      "createdAt": "2026-11-17T21:35:27.834Z",
+      "carColor": "فضي",
+      "acWorking": true
+    }
+  ],
+  "trips": [
+    {
+      "id": 1794938504796,
+      "driver": "نامز انبا التزل",
+      "driverPhone": "01011119433",
+      "car": "فيرنا",
+      "plate": "ج و د ٤٤٤٤",
+      "from": "مرسى مطروح",
+      "to": "القاهرة",
+      "date": "2026-11-18",
+      "time": "09:00 ص",
+      "duration": "بعد ٥ ساعات",
+      "seats": 2,
+      "totalSeats": 3,
+      "price": 350,
+      "depositFee": 40,
+      "pickup": "أمام محطة قطار مطروح",
+      "ladiesOnly": false,
+      "noSmoking": true,
+      "ac": true,
+      "verified": true,
+      "rating": 5,
+      "rides": 1,
+      "bookings": [
+        {
+          "passengerPhone": "01040988494",
+          "passengerName": "شهاب عصام محمد",
+          "payMethod": "InstaPay",
+          "boardingCode": "6768",
+          "status": "cancelled",
+          "bookedAt": "2026-11-17T18:22:25.496Z"
+        },
+        {
+          "passengerPhone": "01040988494",
+          "passengerName": "شهاب عصام محمد",
+          "payMethod": "فودافون كاش",
+          "receiptUrl": "/uploads/receipt_1794938504796_1794941456345_5.jpg",
+          "receiptStatus": "approved",
+          "bagPhotoUrl": "",
+          "boardingCode": "1710",
+          "status": "cancelled",
+          "bookedAt": "2026-11-17T18:51:07.119Z"
+        },
+        {
+          "passengerPhone": "01040988494",
+          "passengerName": "شهاب عصام محمد",
+          "payMethod": "InstaPay",
+          "receiptUrl": "/uploads/receipt_1794938504796_1794942617116_594.jpg",
+          "receiptStatus": "pending",
+          "bagPhotoUrl": "",
+          "boardingCode": "2373",
+          "status": "cancelled",
+          "bookedAt": "2026-11-17T19:10:20.880Z"
+        },
+        {
+          "passengerPhone": "01040988494",
+          "passengerName": "شهاب عصام محمد",
+          "payMethod": "InstaPay",
+          "receiptUrl": "/uploads/receipt_1794938504796_1794942617116_594.jpg",
+          "receiptStatus": "pending",
+          "bagPhotoUrl": "",
+          "boardingCode": "3162",
+          "status": "cancelled",
+          "bookedAt": "2026-11-17T19:10:28.710Z"
+        },
+        {
+          "passengerPhone": "01040988494",
+          "passengerName": "شهاب عصام محمد",
+          "payMethod": "فودافون كاش",
+          "promoCode": "",
+          "depositPaid": 40,
+          "receiptUrl": "/uploads/receipt_1794938504796_1794944512058_466.jpg",
+          "receiptStatus": "approved",
+          "bagPhotoUrl": "",
+          "boardingCode": "6459",
+          "status": "boarded",
+          "bookedAt": "2026-11-17T19:41:54.923Z",
+          "boardedAt": "2026-11-17T19:42:57.420Z"
+        }
+      ],
+      "messages": [
+        {
+          "id": 1794938880056,
+          "senderPhone": "01040988494",
+          "senderName": "شهاب عصام محمد",
+          "senderRole": "passenger",
+          "text": "التكييف شغال ؟",
+          "at": "2026-11-17T18:08:00.056Z"
+        },
+        {
+          "id": 1794939687207,
+          "senderPhone": "01011119433",
+          "senderName": "نامز انبا التزل",
+          "senderRole": "owner",
+          "text": "اه شغال ان شاء الله",
+          "at": "2026-11-17T18:21:27.207Z"
+        },
+        {
+          "id": 1794939722886,
+          "senderPhone": "01040988494",
+          "senderName": "شهاب عصام محمد",
+          "senderRole": "passenger",
+          "text": "فيه مكان للشنطه",
+          "at": "2026-11-17T18:22:02.886Z"
+        }
+      ],
+      "createdAt": "2026-11-17T18:01:44.796Z",
+      "status": "completed",
+      "gpsConfirmed": true,
+      "startedAt": "2026-11-17T19:55:38.876Z",
+      "completedAt": "2026-11-17T19:55:41.419Z"
+    }
+  ],
+  "reports": [],
+  "topups": []
+}

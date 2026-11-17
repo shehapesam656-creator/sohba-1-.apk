@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>صُحبة — تطبيق المسافر</title>
+<meta name="theme-color" content="#124436">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="صُحبة">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="./icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="sohba-core.js"></script>
+<style>
+:root{
+  --ink:#182c28;--muted:#6c7d76;--green:#176b52;--dark-green:#124436;--lime:#d8f277;
+  --paper:#f4f6f1;--card:#ffffff;--line:#e2e8e2;--red:#dc2626;--rbg:#fef2f2;
+  --gbg:#e6f4ea;--gink:#14532d;--gline:#bbf7d0;
+  --amber:#92400e;--abg:#fffbeb;--aink:#78350f;--aline:#fcd34d;
+  --bbg:#eff6ff;--bink:#1e3a8a;--bline:#93c5fd;
+  --pink:#be185d;--pbg:#fce7f3;--inp:#f7f9f6;
+}
+body.dark{
+  --ink:#e7f0ec;--muted:#94a8a0;--green:#229472;--dark-green:#0c2920;--lime:#d8f277;
+  --paper:#0f1c18;--card:#162923;--line:#253d35;--rbg:#3b1818;
+  --gbg:#143829;--gink:#dcfce7;--gline:#166534;
+  --abg:#3b2306;--aink:#fef3c7;--aline:#b45309;
+  --bbg:#172554;--bink:#dbeafe;--bline:#1d4ed8;
+  --pbg:#3b1528;--inp:#11211c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Cairo','Segoe UI',Tahoma,sans-serif;
+  background:var(--paper);
+  color:var(--ink);display:flex;align-items:stretch;justify-content:center;padding:0;
+}
+.phone{
+  width:100%;max-width:100%;height:100%;
+  background:var(--paper);border-radius:0;overflow:hidden;
+  display:flex;flex-direction:column;position:relative;
+  box-shadow:none;
+}
+@media(min-width:700px){#mobileTripsList,#myTripsContainer{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;align-items:start}#mobileTripsList>.card,#myTripsContainer>.card{margin-bottom:0}#myTripsContainer>details{grid-column:1/-1}}
+@media(min-width:960px){body{background:radial-gradient(circle at top,#1f4e40,#0c1f1a);padding:16px}.phone{max-width:760px;border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.45)}}
+.status-bar{display:none}
+.hd{background:var(--dark-green);color:#fff;padding:8px 16px 14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.08)}
+.hd-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{display:flex;align-items:center;gap:8px;font-size:21px;font-weight:800}
+.brandmark{
+  width:44px;height:44px;border-radius:13px;flex-shrink:0;background:var(--lime);
+  color:#124436;display:grid;place-items:center;font-size:19px;font-weight:800;
+}
+.brand small{font-size:11px;color:var(--lime);font-weight:700;display:block;line-height:1}
+.hd-actions{display:flex;align-items:center;gap:6px}
+.role-pill{white-space:nowrap;
+  background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.2);
+  border-radius:20px;padding:4px 10px;font:700 11px Cairo;cursor:pointer;text-decoration:none;
+}
+.icon-btn{
+  width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);
+  border:0;color:#fff;font-size:15px;position:relative;cursor:pointer;display:grid;place-items:center;
+}
+.icon-btn i{position:absolute;top:5px;left:7px;width:8px;height:8px;background:var(--lime);border-radius:50%}
+main{flex:1;overflow-y:auto;padding:14px 14px 20px}
+.scr{display:none}.scr.on{display:block;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+h2{font-size:13px;color:var(--muted);font-weight:700;margin:12px 0 8px;display:flex;justify-content:space-between;align-items:center}
+h2:first-child{margin-top:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:13px 14px;margin-bottom:10px}
+.btn{
+  border:0;border-radius:12px;padding:10px 14px;font:700 12.5px Cairo;
+  cursor:pointer;background:var(--green);color:#fff;width:100%;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s;
+}
+.btn:active{transform:scale(.98)}
+.btn.sec{background:var(--gbg);color:var(--green)}
+.btn.outline{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.search-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin-bottom:8px}
+.inp-box{background:var(--inp);border:1px solid var(--line);border-radius:12px;padding:6px 10px}
+.inp-box label{display:block;font-size:11px;color:var(--muted)}
+.inp-box input,.inp-box select{border:0;background:transparent;width:100%;font:700 13px Cairo;color:var(--ink);outline:0}
+.swap-mini{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--green);font-size:14px;cursor:pointer;display:grid;place-items:center}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:20px;font:700 11.5px Cairo;white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--green);color:#fff;border-color:var(--green)}
+.chip.ladies.on{background:var(--pink);border-color:var(--pink);color:#fff}
+.driver-row{display:flex;align-items:center;gap:10px;cursor:pointer}
+.av{width:42px;height:42px;border-radius:50%;background:#e8ddc7;color:#182c28;display:grid;place-items:center;font-size:20px;flex-shrink:0;overflow:hidden;line-height:1}
+.driver-info b{font-size:14px;display:block}
+.car-pill{display:inline-block;background:var(--inp);color:var(--muted);font-size:11px;padding:2px 8px;border-radius:6px;margin-top:3px;font-weight:600}
+.ladies-badge{display:inline-block;background:var(--pbg);color:var(--pink);font-size:11px;padding:2px 8px;border-radius:6px;margin-top:3px;font-weight:700}
+.rating{margin-right:auto;font-size:12.5px;font-weight:800;text-align:left}
+.timeline{display:flex;align-items:center;gap:10px;margin:10px 0 9px;background:var(--inp);padding:9px 12px;border-radius:12px}
+.time{font-size:15px;font-weight:800}
+.city{font-size:11.5px;color:var(--muted)}
+.track{height:2px;background:#cbd8d0;flex:1;position:relative}
+.track:after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:26px;height:20px;background:var(--inp) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23176b52' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2'/%3E%3Ccircle cx='7' cy='17' r='2'/%3E%3Cpath d='M9 17h6'/%3E%3Ccircle cx='17' cy='17' r='2'/%3E%3C/svg%3E") center/18px no-repeat}
+.meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);padding-bottom:9px;border-bottom:1px solid var(--line)}
+.fare-row{display:flex;align-items:center;justify-content:space-between;padding-top:10px;gap:8px}
+.fare-row b{font-size:17px;color:var(--green)}
+.split-badge{display:block;font-size:11px;color:var(--green);background:var(--gbg);padding:2px 8px;border-radius:6px;margin-top:2px;font-weight:700}
+.pay-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.pay-opt{border:1.5px solid var(--line);border-radius:10px;padding:7px 4px;text-align:center;font:700 11px Cairo;cursor:pointer;background:var(--card);color:var(--ink)}
+.pay-opt.on{border-color:var(--green);background:var(--gbg);color:var(--green)}
+.set-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);gap:10px}
+.set-row:last-child{border-bottom:0}
+.set-row b{font-size:12.5px;display:block}
+.set-row small{font-size:11px;color:var(--muted);display:block}
+.sw{position:relative;width:40px;height:22px;flex-shrink:0;display:inline-block}
+.sw input{opacity:0;position:absolute;inset:0;z-index:1;cursor:pointer}
+.sw i{position:absolute;inset:0;background:#cbd5cf;border-radius:22px;transition:.2s}
+.sw i:before{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;right:3px;transition:.2s}
+.sw input:checked+i{background:var(--green)}
+.sw input:checked+i:before{transform:translateX(-18px)}
+nav{display:flex;background:var(--card);border-top:1px solid var(--line);padding:6px 6px calc(8px + env(safe-area-inset-bottom,0));flex-shrink:0}
+nav button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font:700 11px Cairo;color:var(--muted);cursor:pointer;padding:4px;position:relative}
+nav button span{font-size:19px}
+nav button.on{color:var(--green)}
+.nav-badge{position:absolute;top:3px;left:50%;transform:translateX(8px);background:var(--green);color:var(--lime);font-size:9.5px;font-weight:800;min-width:16px;height:16px;border-radius:10px;display:grid;place-items:center;padding:0 4px;line-height:1}
+.sheet-back{position:absolute;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;z-index:40}
+.sheet-back.open{display:flex}
+.sheet{background:var(--card);width:100%;border-radius:24px 24px 0 0;padding:16px 16px 22px;max-height:86%;overflow-y:auto;animation:up .22s ease}
+@keyframes up{from{transform:translateY(30px)}to{transform:none}}
+.chat-list{display:flex;flex-direction:column;gap:6px;max-height:190px;overflow-y:auto;background:var(--inp);padding:10px;border-radius:12px;margin:8px 0}
+.stepper-4{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--inp);border:1px solid var(--line);border-radius:10px;padding:7px 6px;margin-bottom:8px;text-align:center;font-size:10px;font-weight:700;color:var(--muted)}
+.stepper-4 .st-i{display:flex;flex-direction:column;align-items:center;gap:2px}
+.stepper-4 .st-d{width:14px;height:14px;border-radius:50%;background:#cbd5cf;color:#fff;display:grid;place-items:center;font-size:9px}
+.stepper-4 .st-i.done .st-d{background:var(--green)}
+.stepper-4 .st-i.done{color:var(--green)}
+.msg{padding:7px 10px;border-radius:10px;font-size:12px;max-width:85%;line-height:1.45}
+.msg.them{background:var(--card);border:1px solid var(--line);align-self:flex-start}
+.msg.me{background:var(--green);color:#fff;align-self:flex-end}
+.toast{position:absolute;bottom:76px;left:16px;right:16px;background:#15352b;color:#fff;padding:10px 14px;border-radius:12px;font-size:12px;font-weight:700;text-align:center;opacity:0;pointer-events:none;transform:translateY(10px);transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>5G 🔋 92%</span></div>
+  <header class="hd">
+    <div class="hd-row">
+      <div class="brand">
+        <div class="brandmark" style="background:#124436;border:1.5px solid rgba(216,242,119,.45);overflow:hidden;padding:0">
+          <img src="data:image/jpeg;base64,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" alt="صُحبة" style="width:100%;height:100%;object-fit:cover;display:block">
+        </div>
+        <div>صُحبة<small>الصحبة الصحبة</small></div>
+      </div>
+      <div class="hd-actions">
+        <button class="role-pill" id="langBtn" onclick="toggleLang()">🌐 EN</button>
+        <button class="role-pill" onclick="doLogout()" title="تسجيل الخروج">🚪 خروج</button>
+        <button class="icon-btn" id="hdrBellBtn" onclick="showPassengerNotifications()" title="الإشعارات">🔔<i></i></button>
+        <button class="icon-btn" id="hdrRefBtn" onclick="loadTripsFromServer(true)" title="تحديث">🔄</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- TAB 1: EXPLORE -->
+    <section class="scr on" id="explore">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 2px 10px;font-size:11.5px;color:var(--muted);font-weight:700">
+        <span id="bannerTitle" style="color:var(--green);font-weight:800">مرسى مطروح ⇄ الإسكندرية / القاهرة</span>
+        <span>توثيق #SHB · سيارات مكيفة</span>
+      </div>
+
+      <details id="searchFold" class="card" style="padding:10px 12px;margin-bottom:8px">
+        <summary style="list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:12px;font-weight:800;color:var(--ink)">
+          <span id="searchSummaryTxt">🔍 مرسى مطروح ← القاهرة · ١٨ نوفمبر · ١ مقعد</span>
+          <span style="font-size:11px;background:var(--gbg);color:var(--green);padding:2px 9px;border-radius:8px">تعديل ▾</span>
+        </summary>
+        <div style="margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)">
+        <div class="search-grid">
+          <div class="inp-box">
+            <label>مسافر من</label>
+            <select id="sFrom" onchange="updateSearchSummary()">
+              <option value="مرسى مطروح" selected>مرسى مطروح 🟢</option>
+              <option value="القاهرة">القاهرة 🟢</option>
+              <option value="الإسكندرية">الإسكندرية 🟢</option>
+              <option value="LOCKED" disabled>🔒 باقي المحافظات (قريباً)</option>
+            </select>
+          </div>
+          <button class="swap-mini" onclick="swapRoute();updateSearchSummary()">⇄</button>
+          <div class="inp-box">
+            <label>رايح إلى</label>
+            <select id="sTo" onchange="updateSearchSummary()">
+              <option value="القاهرة" selected>القاهرة 🟢</option>
+              <option value="الإسكندرية">الإسكندرية 🟢</option>
+              <option value="مرسى مطروح">مرسى مطروح 🟢</option>
+              <option value="LOCKED" disabled>🔒 باقي المحافظات (قريباً)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+          <div class="inp-box"><label>يوم السفر</label><input type="date" id="sDate" value="2026-11-18" style="direction:ltr" onchange="updateSearchSummary()"></div>
+          <div class="inp-box"><label>عدد المقاعد</label>
+            <select id="sPax" onchange="updateSearchSummary()">
+              <option value="1">كرسي واحد</option>
+              <option value="2">كرسيين</option>
+              <option value="3">3 كراسي</option>
+            </select>
+          </div>
+        </div>
+        <button id="searchBtn" class="btn" style="padding:9px" onclick="document.getElementById('searchFold').open=false;runSearch()">🔍 اعرض الرحلات المتاحة</button>
+        </div>
+      </details>
+
+      <div class="chips">
+        <button class="chip on" onclick="quickFilter('الكل',this)">كل الخطوط</button>
+        <button class="chip ladies" onclick="quickFilter('LADIES',this)">👩🏻 سيدات وعائلات</button>
+        <button class="chip" onclick="quickFilter('مرسى مطروح|القاهرة',this)">🟢 مطروح ⇄ القاهرة</button>
+        <button class="chip" onclick="quickFilter('مرسى مطروح|الإسكندرية',this)">🟢 مطروح ⇄ الإسكندرية</button>
+        <button class="chip" style="opacity:.65;border-style:dashed" onclick="toast('🔒 باقي المحافظات قريباً بعد تغطية خطوط مطروح!')">🔒 باقي المحافظات</button>
+      </div>
+
+      <details class="card" style="padding:10px 12px;margin-bottom:10px;cursor:pointer;background:var(--card);border-color:var(--gline)">
+        <summary style="list-style:none;display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;color:var(--green)">
+            <span>🎁</span>
+            <span>مزايا صُحبة (الرحلة ٥ مجاناً · باقة ٩٩ ج · كود دعوة)</span>
+          </div>
+          <span style="font-size:11px;background:var(--gbg);color:var(--green);padding:2px 8px;border-radius:8px;font-weight:800">التفاصيل ▾</span>
+        </summary>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;line-height:1.55">
+          <div style="display:flex;justify-content:space-between;align-items:center;background:var(--gbg);color:var(--gink);padding:7px 9px;border-radius:8px;margin-bottom:6px">
+            <span>🎁 <b>هدية الولاء:</b> سافرت ٣ مرات، و<b>الرحلة الخامسة مجاناً بدون رسوم!</b></span>
+            <span style="background:#16a34a;color:#fff;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:8px;white-space:nowrap">٣/٤ ⭐</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bbg);color:var(--bink);padding:7px 9px;border-radius:8px;margin-bottom:6px">
+            <span>🎫 <b>باقة المسافر الدائم:</b> ٩٩ ج/شهر (٦ رحلات بدون عربون)</span>
+            <button id="sohbaPassBtn" onclick="subscribeSohbaPass()" style="border:1px solid #3b82f6;background:var(--card);color:#3b82f6;border-radius:6px;padding:3px 9px;font:700 11px Cairo;cursor:pointer">اشترك</button>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;background:var(--abg);color:var(--aink);padding:7px 9px;border-radius:8px">
+            <span>🎟️ <b>كود دعوتك:</b> <code style="background:var(--card);color:var(--ink);padding:1px 6px;border-radius:4px;font-weight:800">MATROUH10</code> (خصم ١٠ ج)</span>
+            <button onclick="toast('📋 تم نسخ كود الدعوة (MATROUH10)')" style="border:1px solid #d97706;background:#d97706;color:#fff;border-radius:6px;padding:3px 9px;font:700 11px Cairo;cursor:pointer">نسخ</button>
+          </div>
+        </div>
+      </details>
+
+      <h2><span>الرحلات المتاحة اليوم (<span id="tripCounter" style="color:var(--green)"></span>)</span></h2>
+      <div id="mobileTripsList"></div>
+    </section>
+
+    <!-- TAB 2: MY TRIPS -->
+    <section class="scr" id="trips">
+      <h2>🎫 تذاكري وحجوزاتي</h2>
+      <div id="myTripsContainer"></div>
+    </section>
+
+    <!-- TAB 3: SETTINGS & SAFETY -->
+    <section class="scr" id="settings">
+      <div class="card" style="display:flex;align-items:center;gap:12px">
+        <div class="av" style="width:50px;height:50px;font-size:24px">🎒</div>
+        <div style="flex:1">
+          <b style="font-size:15px">كريم عبد الرحمن</b>
+          <div id="passTrustBadge" style="font-size:11.5px;color:var(--green);font-weight:700">✓ مسجل برقم الموبايل (OTP)</div>
+          <div style="font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px">
+            <span>رصيد المحفظة: <b id="passWalletBal" style="color:var(--green)">0 ج.م</b></span>
+            <button onclick="openWalletTopupSheet()" style="border:1px solid var(--green);background:var(--gbg);color:var(--green);border-radius:7px;padding:2px 8px;font:800 10.5px Cairo;cursor:pointer">➕ شحن المحفظة</button>
+          </div>
+          <div style="font-size:11px;color:var(--muted)"><span id="passLoyaltyCnt">الرحلات المكتملة: 0 / 5</span></div>
+        </div>
+      </div>
+
+      <div id="passOptionalKycCard" class="card" style="background:var(--bbg);border-color:var(--bline);padding:11px 13px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <div style="font-size:11.5px;color:var(--bink)">
+            <b>🛡️ ترقية اختيارية: وثّق البطاقة</b><br>
+            <span style="font-size:11px">تمنحك شارة الثقة وأولوية القبول عند أصحاب السيارات (تُحذف الصورة خلال ٣٠ يوماً).</span>
+          </div>
+          <button id="passOptKycBtn" onclick="openKycUploadSheet()" style="border:0;background:var(--green);color:#fff;border-radius:8px;padding:6px 10px;font:700 11px Cairo;cursor:pointer;white-space:nowrap">توثيق الآن</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="set-row">
+          <div><b>🌙 الوضع الليلي (Dark Mode)</b><small>تغيير مظهر التطبيق للوضع الداكن المريح</small></div>
+          <label class="sw"><input type="checkbox" onchange="document.body.classList.toggle('dark',this.checked)"><i></i></label>
+        </div>
+        <div class="set-row">
+          <div><b>🔔 تنبيهات الرحلات المتاحة</b><small>إشعار فوري عند نشر رحلة جديدة على خط مطروح</small></div>
+          <label class="sw"><input type="checkbox" checked onchange="toast(this.checked?'تم تفعيل تنبيهات الرحلات':'تم إيقاف التنبيهات')"><i></i></label>
+        </div>
+        <div class="set-row">
+          <div><b>📍 مشاركة خط السير مع الأسرة</b><small>إرسال موقعك وبيانات اللوحة تلقائياً للأسرة</small></div>
+          <label class="sw"><input type="checkbox" checked onchange="toast(this.checked?'تم تفعيل المشاركة التلقائية':'تم إيقاف المشاركة')"><i></i></label>
+        </div>
+      </div>
+
+      <button class="btn" style="margin-bottom:10px;background:var(--dark-green);color:var(--lime)" onclick="openPoliciesSheet()">📜 سياسات وقواعد «صُحبة» الكاملة (اضغط للعرض)</button>
+
+      <div class="card" style="background:var(--rbg);border-color:#fca5a5">
+        <b style="font-size:13px;color:var(--red);display:block;margin-bottom:6px">🚨 طوارئ الطريق السريع</b>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+          <a class="btn outline" style="padding:7px;font-size:11px;border-color:#fca5a5;color:var(--red);text-decoration:none" href="tel:122">🚓 النجدة 122</a>
+          <a class="btn outline" style="padding:7px;font-size:11px;border-color:#fca5a5;color:var(--red);text-decoration:none" href="tel:123">🚑 الإسعاف 123</a>
+          <a class="btn outline" style="padding:7px;font-size:11px;border-color:#fca5a5;color:var(--red);text-decoration:none" href="tel:128">🛣️ المرور 128</a>
+        </div>
+      </div>
+
+      <button class="btn outline" onclick="doLogout()">🚪 تسجيل الخروج من الحساب</button>
+    </section>
+  </main>
+
+  <nav id="bottomNav">
+    <button class="on" data-tab="explore" onclick="go('explore')"><span>🧭</span><em style="font-style:normal">استكشف</em></button>
+    <button data-tab="trips" onclick="go('trips')"><span>🎫</span><em style="font-style:normal">تذاكري</em><i class="nav-badge" id="navBadge">1</i></button>
+    <button data-tab="settings" onclick="go('settings')"><span>⚙️</span><em style="font-style:normal">الإعدادات</em></button>
+  </nav>
+
+  <div class="sheet-back" id="sheetBack" onclick="if(event.target===this)closeSheet()">
+    <div class="sheet" id="sheetContent"></div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+let CURRENT_USER = (typeof SohbaCore !== 'undefined') ? SohbaCore.getUser() : null;
+if (!CURRENT_USER || !CURRENT_USER.phone) {
+  window.location.replace('./صُحبة-التسجيل.html?mode=login');
+}
+let TRIPS = [];
+
+function doLogout() {
+  if (typeof SohbaCore !== 'undefined') SohbaCore.logout();
+  window.location.replace('./index.html');
+}
+
+function mapServerTrip(st) {
+  const myPhone = CURRENT_USER ? CURRENT_USER.phone : '';
+  const myBooking = (st.bookings || []).find(b => b.passengerPhone === myPhone && b.status !== 'cancelled');
+  return {
+    id: st.id,
+    driver: st.driver,
+    driverPhone: st.driverPhone,
+    avatar: st.ladiesOnly ? '👩🏻' : '👨🏻',
+    rating: st.rating || '5.0',
+    reviews: st.rides || 0,
+    car: st.car + (st.carColor ? ' · ' + st.carColor : ''),
+    plate: st.plate,
+    from: st.from,
+    to: st.to,
+    depTime: st.time,
+    arrTime: st.duration || '—',
+    dateLabel: st.date,
+    seats: st.seats,
+    tag: (st.ladiesOnly ? '👩🏻 سيدات فقط · ' : '') + (st.noSmoking ? '🚭 بدون تدخين · ' : '') + (st.ac ? '❄️ تكييف شغال' : 'بدون تكييف'),
+    pickup: st.pickup,
+    price: st.price,
+    depositFee: st.depositFee || 40,
+    ladiesOnly: Boolean(st.ladiesOnly),
+    tripStatus: st.status || 'scheduled',
+    gpsConfirmed: Boolean(st.gpsConfirmed),
+    joined: Boolean(myBooking && myBooking.status !== 'mismatch_pending'),
+    boarded: Boolean(myBooking && myBooking.status === 'boarded'),
+    mismatchPending: Boolean(myBooking && myBooking.status === 'mismatch_pending'),
+    boardingCode: myBooking ? myBooking.boardingCode : null,
+    largeBagsUsed: st.largeBagsUsed || 0,
+    receiptStatus: myBooking ? (myBooking.receiptStatus || 'none') : 'none',
+    receiptUrl: myBooking ? (myBooking.receiptUrl || '') : '',
+    userRating: myBooking ? myBooking.userRating : 0,
+    messages: (st.messages || []).map(m => ({
+      sender: m.senderPhone === myPhone ? 'me' : 'them',
+      text: m.text
+    }))
+  };
+}
+
+async function refreshMyProfile() {
+  if (!CURRENT_USER || !CURRENT_USER.phone) return;
+  try {
+    const res = await SohbaCore.api('/api/users/me?phone=' + encodeURIComponent(CURRENT_USER.phone));
+    if (res && res.user) {
+      CURRENT_USER = res.user;
+      SohbaCore.saveUser(res.user);
+      applyKycBadgeState(res.user);
+    }
+  } catch (e) {}
+}
+
+function applyKycBadgeState(u) {
+  const wEl = document.getElementById('passWalletBal');
+  if (wEl) wEl.textContent = (u.walletBalance || 0) + ' ج.م';
+  const lEl = document.getElementById('passLoyaltyCnt');
+  const comp = u.completedRides || 0;
+  if (lEl) lEl.textContent = (comp % 5 === 4) ? '🎁 رحلتك القادمة مجاناً!' : `الرحلات المكتملة: ${comp % 5} / 5`;
+  hasSohbaPass = Boolean(u.hasSohbaPass);
+  const pBtn = document.getElementById('sohbaPassBtn');
+  if (pBtn) {
+    pBtn.textContent = hasSohbaPass ? '✓ مشترك (٠ ج عربون)' : 'اشترك';
+    pBtn.style.background = hasSohbaPass ? '#16a34a' : 'var(--card)';
+    pBtn.style.color = hasSohbaPass ? '#fff' : '#3b82f6';
+  }
+  const badge = document.getElementById('passTrustBadge');
+  const btn = document.getElementById('passOptKycBtn');
+  if (!badge) return;
+  const st = u.kycStatus || (u.verified ? 'approved' : 'phone_only');
+  if (st === 'approved' || u.verified) {
+    badge.textContent = '🛡️ مسافر موثق ومعتمد من الإدارة ✓';
+    badge.style.color = 'var(--green)';
+    if (btn) { btn.textContent = '✓ موثق'; btn.disabled = true; btn.style.opacity = '.7'; }
+  } else if (st === 'pending') {
+    badge.textContent = '⏳ طلب التوثيق قيد مراجعة الإدارة';
+    badge.style.color = '#d97706';
+    if (btn) { btn.textContent = '⏳ قيد المراجعة'; btn.disabled = true; btn.style.opacity = '.8'; }
+  } else if (st === 'rejected') {
+    badge.textContent = '❌ تم رفض التوثيق' + (u.adminNote ? ' (' + u.adminNote + ')' : ' — يرجى إعادة الرفع');
+    badge.style.color = 'var(--red)';
+    if (btn) { btn.textContent = 'إعادة الرفع'; btn.disabled = false; btn.style.opacity = '1'; }
+  } else {
+    badge.textContent = '✓ مسجل برقم الموبايل (OTP)';
+    badge.style.color = 'var(--green)';
+    if (btn) { btn.textContent = 'توثيق الآن'; btn.disabled = false; btn.style.opacity = '1'; }
+  }
+}
+
+async function loadTripsFromServer(showNotice) {
+  try {
+    await refreshMyProfile();
+    const res = await SohbaCore.api('/api/trips');
+    TRIPS = (res.trips || []).map(mapServerTrip);
+    SohbaCore.saveTrips(TRIPS);
+    renderExplore(TRIPS);
+    if (document.getElementById('trips').classList.contains('on')) renderMyTrips();
+    if (activeSheetTripId && document.getElementById('sheetBack').classList.contains('open')) {
+      const t = TRIPS.find(x => x.id === activeSheetTripId);
+      const chatBox = document.getElementById('sheetChat_' + activeSheetTripId);
+      if (t && chatBox) {
+        const html = t.messages.length ? t.messages.map(m => `<div class="msg ${m.sender}">${m.text}</div>`).join('') : '<div style="font-size:11.5px;color:var(--muted);text-align:center;padding:8px">لا توجد رسائل بعد</div>';
+        if (chatBox.dataset.count !== String(t.messages.length)) {
+          chatBox.innerHTML = html;
+          chatBox.dataset.count = String(t.messages.length);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      }
+    }
+    if (showNotice) toast('🔄 تم تحديث الرحلات (' + TRIPS.length + ')');
+  } catch (err) {
+    if (showNotice) toast('❌ ' + err.message);
+  }
+}
+
+function syncTrips() {
+  if (typeof SohbaCore !== 'undefined') SohbaCore.saveTrips(TRIPS);
+}
+
+function initApp() {
+  if (typeof SohbaCore !== 'undefined') {
+    SohbaCore.registerSW();
+    if (SohbaCore.ICO) {
+      const nb = document.querySelectorAll('#bottomNav button span');
+      if (nb[0]) nb[0].innerHTML = SohbaCore.ICO.compass;
+      if (nb[1]) nb[1].innerHTML = SohbaCore.ICO.ticket;
+      if (nb[2]) nb[2].innerHTML = SohbaCore.ICO.settings;
+      const b1 = document.getElementById('hdrBellBtn'); if (b1) b1.innerHTML = SohbaCore.ICO.bell + '<i></i>';
+      const b2 = document.getElementById('hdrRefBtn'); if (b2) b2.innerHTML = SohbaCore.ICO.refresh;
+    }
+    const u = SohbaCore.getUser();
+    if (u) {
+      CURRENT_USER = u;
+      const nameEl = document.querySelector('#settings .card b');
+      if (nameEl && u.name) nameEl.textContent = u.name;
+      applyKycBadgeState(u);
+    }
+    loadTripsFromServer(false);
+    SohbaCore.subscribeEvents(() => loadTripsFromServer(false));
+    setInterval(() => loadTripsFromServer(false), 15000);
+  }
+}
+
+let activeRouteFilter = 'الكل';
+let selectedPayMethod = 'InstaPay';
+let hasSohbaPass = false;
+let currentLang = 'ar';
+let activeSheetTripId = null;
+let sheetSubStep = 'preview';
+let askCancelId = null;
+let askMismatchId = null;
+let askPayConfirmId = null;
+
+function tr(ar, en) { return currentLang === 'en' ? en : ar; }
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(window._tTimer);
+  window._tTimer = setTimeout(() => t.classList.remove('on'), 3000);
+}
+
+function seatsLabel(n) {
+  if (n <= 0) return 'مكتمل';
+  if (n === 1) return 'مقعد واحد';
+  if (n === 2) return 'مقعدان';
+  return n + ' مقاعد';
+}
+
+function go(tabId) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.toggle('on', s.id === tabId));
+  document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('on', b.dataset.tab === tabId));
+  if (tabId === 'trips') renderMyTrips();
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'ar' ? 'en' : 'ar';
+  const isEn = currentLang === 'en';
+  document.documentElement.dir = isEn ? 'ltr' : 'rtl';
+  document.documentElement.lang = isEn ? 'en' : 'ar';
+  const langBtn = document.getElementById('langBtn');
+  const navBtns = document.querySelectorAll('#bottomNav button');
+  const ownerLink = document.querySelector('.hd-actions a.role-pill');
+  const brandDiv = document.querySelector('.brand > div:last-child');
+  if (langBtn) langBtn.textContent = isEn ? '🌐 عربي' : '🌐 EN';
+  if (ownerLink) ownerLink.textContent = isEn ? '🚘 Have a Car?' : '🚘 عندك عربية؟';
+  if (brandDiv) brandDiv.innerHTML = isEn ? 'Sohba<small>True Companionship</small>' : 'صُحبة<small>الصحبة الصحبة</small>';
+  document.getElementById('bannerTitle').textContent = isEn ? 'Marsa Matrouh ⇄ Alexandria / Cairo' : 'مرسى مطروح ⇄ الإسكندرية / القاهرة';
+  document.getElementById('searchBtn').textContent = isEn ? '🔍 Show Available Rides' : '🔍 اعرض الرحلات المتاحة';
+
+  const cityEn = {'مرسى مطروح':'Marsa Matrouh 🟢','القاهرة':'Cairo 🟢','الإسكندرية':'Alexandria 🟢','LOCKED':'🔒 Other Cities (Soon)'};
+  const cityAr = {'مرسى مطروح':'مرسى مطروح 🟢','القاهرة':'القاهرة 🟢','الإسكندرية':'الإسكندرية 🟢','LOCKED':'🔒 باقي المحافظات (قريباً)'};
+  ['sFrom','sTo'].forEach(sid => {
+    const sel = document.getElementById(sid);
+    if (sel) Array.from(sel.options).forEach(o => { o.textContent = (isEn ? cityEn : cityAr)[o.value] || o.textContent; });
+  });
+  const sPax = document.getElementById('sPax');
+  if (sPax) {
+    const pEn = {'1':'1 Seat','2':'2 Seats','3':'3 Seats'}, pAr = {'1':'كرسي واحد','2':'كرسيين','3':'3 كراسي'};
+    Array.from(sPax.options).forEach(o => { o.textContent = (isEn ? pEn : pAr)[o.value] || o.textContent; });
+  }
+  const setLinks = document.querySelectorAll('#settings a.btn');
+  if (setLinks.length >= 2) {
+    setLinks[0].textContent = isEn ? '📝 Registration & Policies' : '📝 صفحة التسجيل والتوثيق والسياسات';
+    setLinks[1].textContent = isEn ? '🚘 Switch to Car Owner App' : '🚘 الانتقال لتطبيق صاحب العربية';
+  }
+  const sLabels = document.querySelectorAll('#explore .inp-box label');
+  if (sLabels.length >= 4) {
+    const arL = ['مسافر من','رايح إلى','يوم السفر','عدد المقاعد'];
+    const enL = ['From','To','Travel Date','Seats'];
+    sLabels.forEach((el, i) => { if (arL[i]) el.textContent = isEn ? enL[i] : arL[i]; });
+  }
+  const chips = document.querySelectorAll('#explore .chips .chip');
+  if (chips.length >= 5) {
+    const arC = ['كل الخطوط','👩🏻 سيدات وعائلات','🟢 مطروح ⇄ القاهرة','🟢 مطروح ⇄ الإسكندرية','🔒 باقي المحافظات'];
+    const enC = ['All Routes','👩🏻 Ladies & Families','🟢 Matrouh ⇄ Cairo','🟢 Matrouh ⇄ Alex','🔒 Other Cities'];
+    chips.forEach((el, i) => { if (arC[i]) el.textContent = isEn ? enC[i] : arC[i]; });
+  }
+  const tripsH2 = document.querySelector('#trips h2');
+  if (tripsH2) tripsH2.textContent = isEn ? '🎫 My Tickets & Bookings' : '🎫 تذاكري وحجوزاتي';
+  if (navBtns.length >= 3) {
+    navBtns[0].querySelector('em').textContent = isEn ? 'Explore' : 'استكشف';
+    navBtns[1].querySelector('em').textContent = isEn ? 'My Trips' : 'تذاكري';
+    navBtns[2].querySelector('em').textContent = isEn ? 'Settings' : 'الإعدادات';
+  }
+  renderExplore(TRIPS);
+  if (document.getElementById('trips').classList.contains('on')) renderMyTrips();
+  toast(isEn ? '🌐 Switched to English Mode' : '🌐 تم التبديل للغة العربية');
+}
+
+const kycUploadState = { nidUrl: '', selfieUrl: '' };
+
+function openKycUploadSheet() {
+  kycUploadState.nidUrl = '';
+  kycUploadState.selfieUrl = '';
+  document.getElementById('sheetContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <b style="font-size:15px">🛡️ توثيق الهوية بالصور للمراجعة</b>
+      <button onclick="closeSheet()" style="border:0;background:var(--inp);color:var(--ink);width:28px;height:28px;border-radius:8px;font-size:16px;cursor:pointer">×</button>
+    </div>
+    <div style="background:var(--bbg);color:var(--bink);border:1px solid var(--bline);border-radius:10px;padding:8px 10px;font-size:11px;margin-bottom:10px;line-height:1.6">
+      • 📸 <b>يجب أن تكون الصور واضحة ومقروءة بالكامل</b> (لا يتم التفعيل إلا بعد مراجعة واعتماد الإدارة).<br>
+      • 🗑️ <b>يتم مسح الملفات والصور تلقائياً بعد ٣٠ يوماً</b> مع بقاء شارة التوثيق الدائمة في حسابك.
+    </div>
+    <label style="display:flex;justify-content:space-between;align-items:center;border:1.5px dashed var(--green);background:var(--inp);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer">
+      <div><b>🪪 صورة البطاقة الشخصية</b><small style="display:block;font-size:10.5px;color:var(--muted)">واضحة من الأمام</small></div>
+      <span id="kycNidStat" style="font-size:11px;font-weight:800;color:var(--green)">📸 اختر صورة</span>
+      <input type="file" accept="image/*" style="display:none" onchange="handleKycDocSelect('nid', this)">
+    </label>
+    <label style="display:flex;justify-content:space-between;align-items:center;border:1.5px dashed var(--green);background:var(--inp);border-radius:12px;padding:10px 12px;margin-bottom:12px;cursor:pointer">
+      <div><b>🤳 صورة سيلفي فورية</b><small style="display:block;font-size:10.5px;color:var(--muted)">لمطابقة الوجه مع البطاقة</small></div>
+      <span id="kycSelfieStat" style="font-size:11px;font-weight:800;color:var(--green)">📸 التقط سيلفي</span>
+      <input type="file" accept="image/*" capture="user" style="display:none" onchange="handleKycDocSelect('selfie', this)">
+    </label>
+    <button class="btn" id="submitKycBtn" onclick="submitKycUpload()">إرسال الصور لمراجعة الإدارة ←</button>`;
+  document.getElementById('sheetBack').classList.add('open');
+}
+
+async function handleKycDocSelect(kind, input) {
+  const file = input && input.files && input.files[0];
+  if (!file) return;
+  const stat = document.getElementById(kind === 'nid' ? 'kycNidStat' : 'kycSelfieStat');
+  if (stat) stat.textContent = '⏳ جاري الرفع...';
+  try {
+    const url = await SohbaCore.uploadImage(file, 'kyc_' + kind);
+    if (kind === 'nid') kycUploadState.nidUrl = url;
+    else kycUploadState.selfieUrl = url;
+    if (stat) stat.textContent = '✓ تم الرفع';
+  } catch (err) {
+    if (stat) stat.textContent = '❌ فشل';
+    toast('❌ ' + err.message);
+  }
+}
+
+async function submitKycUpload() {
+  if (!kycUploadState.nidUrl || !kycUploadState.selfieUrl) {
+    toast('📸 يرجى رفع صورة البطاقة وصورة السيلفي أولاً!');
+    return;
+  }
+  const btn = document.getElementById('submitKycBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'جاري الإرسال...'; }
+  try {
+    const res = await SohbaCore.api('/api/users/kyc', 'POST', {
+      phone: CURRENT_USER.phone,
+      nidUrl: kycUploadState.nidUrl,
+      selfieUrl: kycUploadState.selfieUrl
+    });
+    CURRENT_USER = res.user;
+    SohbaCore.saveUser(res.user);
+    applyKycBadgeState(res.user);
+    closeSheet();
+    toast('⏳ تم إرسال مستنداتك للإدارة — طلبك الآن قيد المراجعة!');
+  } catch (err) {
+    toast('❌ ' + err.message);
+    if (btn) { btn.disabled = false; btn.textContent = 'إرسال الصور لمراجعة الإدارة ←'; }
+  }
+}
+
+function showPassengerNotifications() {
+  const joined = TRIPS.filter(t => t.joined);
+  const msgCount = joined.reduce((s, t) => s + (t.messages || []).length, 0);
+  toast(`🔔 لديك ${joined.length} تذاكر نشطة و ${msgCount} رسائل · رصيد المحفظة: ${(CURRENT_USER && CURRENT_USER.walletBalance) || 0} ج.م`);
+}
+
+function openWalletTopupSheet() {
+  window._topupAmt = 100;
+  window._topupMethod = 'InstaPay';
+  window._topupRecUrl = '';
+  window._topupArmed = false;
+  renderWalletTopupSheet();
+  document.getElementById('sheetBack').classList.add('open');
+}
+
+function renderWalletTopupSheet() {
+  document.getElementById('sheetContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <b style="font-size:15px">💰 شحن المحفظة (0% عمولة)</b>
+      <button onclick="closeSheet()" style="border:0;background:var(--inp);color:var(--ink);width:28px;height:28px;border-radius:8px;font-size:16px;cursor:pointer">×</button>
+    </div>
+    <div style="font-size:11.5px;color:var(--muted);margin-bottom:8px">اشحن مرة واحدة واحجز كل رحلاتك فوراً من الرصيد بدون انتظار مراجعة كل رحلة.</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px">
+      ${[100,200,300].map(a => `<button onclick="window._topupAmt=${a};window._topupArmed=false;renderWalletTopupSheet()" style="border:1.5px solid ${window._topupAmt===a?'var(--green)':'var(--line)'};background:${window._topupAmt===a?'var(--gbg)':'var(--card)'};color:var(--ink);border-radius:10px;padding:8px;font:800 12px Cairo;cursor:pointer">${a} ج.م</button>`).join('')}
+    </div>
+    <div class="pay-methods" style="grid-template-columns:1fr 1fr;margin-bottom:8px">
+      <div class="pay-opt ${window._topupMethod==='InstaPay'?'on':''}" onclick="window._topupMethod='InstaPay';window._topupArmed=false;renderWalletTopupSheet()">⚡ InstaPay</div>
+      <div class="pay-opt ${window._topupMethod==='فودافون كاش'?'on':''}" onclick="window._topupMethod='فودافون كاش';window._topupArmed=false;renderWalletTopupSheet()">📱 فودافون كاش</div>
+    </div>
+    <div style="background:var(--gbg);border:1px solid var(--gline);border-radius:10px;padding:8px 10px;margin-bottom:8px;font-size:11.5px;display:flex;justify-content:space-between;align-items:center;gap:6px">
+      <div>📲 حوّل على <b>InstaPay / فودافون كاش</b>:<br><b style="color:var(--green);font-size:13px">01040988494</b> (باسم: شهاب)</div>
+      <button onclick="copyTransferNum()" style="border:1px solid var(--green);background:#fff;color:var(--green);border-radius:8px;padding:5px 10px;font:800 11px Cairo;cursor:pointer">📋 نسخ</button>
+    </div>
+    <label style="display:flex;justify-content:space-between;align-items:center;border:1.5px dashed var(--green);background:var(--inp);border-radius:10px;padding:9px 12px;margin-bottom:10px;cursor:pointer;font-size:11.5px">
+      <span>🧾 صورة إيصال التحويل (إلزامي)</span>
+      <b id="topupRecSt">${window._topupRecUrl?'✓ تم الرفع':'📸 اختر صورة'}</b>
+      <input type="file" accept="image/*" style="display:none" onchange="uploadTopupReceipt(this)">
+    </label>
+    ${window._topupArmed ? `
+      <div style="background:var(--abg);border:1px solid var(--aline);border-radius:10px;padding:9px;font-size:11.5px;margin-bottom:6px">
+        <b>⚠️ تأكيد إرسال طلب شحن ${window._topupAmt} ج.م (${window._topupMethod})؟</b>
+        <div style="display:flex;gap:6px;margin-top:6px">
+          <button class="btn" style="flex:1;padding:7px" onclick="submitWalletTopup()">✅ تأكيد الإرسال</button>
+          <button class="btn outline" style="width:auto;padding:7px 12px" onclick="window._topupArmed=false;renderWalletTopupSheet()">تراجع</button>
+        </div>
+      </div>
+    ` : `<button class="btn" onclick="armWalletTopup()">شحن ${window._topupAmt} ج.م الآن ←</button>`}`;
+}
+
+async function uploadTopupReceipt(input) {
+  const f = input && input.files && input.files[0];
+  if (!f) return;
+  const st = document.getElementById('topupRecSt');
+  if (st) st.textContent = '⏳...';
+  try {
+    window._topupRecUrl = await SohbaCore.uploadImage(f, 'topup');
+    if (st) st.textContent = '✓ تم الرفع';
+  } catch (e) { if (st) st.textContent = '❌'; toast('❌ ' + e.message); }
+}
+
+function copyTransferNum() {
+  const num = '01040988494';
+  if (navigator.clipboard) navigator.clipboard.writeText(num).then(() => toast('📋 تم نسخ الرقم: 01040988494 (شهاب)'));
+  else toast('📲 رقم التحويل: 01040988494 (شهاب)');
+}
+
+function armWalletTopup() {
+  if (!window._topupRecUrl) { toast('📸 يرجى رفع صورة إيصال التحويل أولاً'); return; }
+  window._topupArmed = true;
+  renderWalletTopupSheet();
+}
+
+async function submitWalletTopup() {
+  try {
+    await SohbaCore.api('/api/wallet/topup', 'POST', {
+      phone: CURRENT_USER.phone,
+      amount: window._topupAmt,
+      method: window._topupMethod,
+      receiptUrl: window._topupRecUrl
+    });
+    closeSheet();
+    toast('⏳ تم إرسال طلب شحن ' + window._topupAmt + ' ج — سيُضاف الرصيد فور مراجعة الإدارة!');
+  } catch (e) { toast('❌ ' + e.message); }
+}
+
+function subscribeSohbaPass() {
+  if (hasSohbaPass) {
+    document.getElementById('sheetContent').innerHTML = `
+      <b style="font-size:14px;display:block;margin-bottom:8px">⚠️ تأكيد إلغاء تجديد باقة المسافر الدائم؟</b>
+      <div style="display:flex;gap:6px">
+        <button class="btn" style="background:var(--red);flex:1" onclick="confirmSohbaPassToggle(false)">نعم، إلغاء التجديد</button>
+        <button class="btn outline" style="width:auto" onclick="closeSheet()">تراجع</button>
+      </div>`;
+  } else {
+    document.getElementById('sheetContent').innerHTML = `
+      <b style="font-size:14px;display:block;margin-bottom:6px">🎫 تأكيد الاشتراك في باقة المسافر الدائم</b>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 10px">سيتم تفعيل اشتراك شهري بقيمة <b>٩٩ ج.م/شهر</b> للحصول على ٠ ج عربون على كل الرحلات.</p>
+      <div style="display:flex;gap:6px">
+        <button class="btn" style="flex:1" onclick="confirmSohbaPassToggle(true)">✅ تأكيد الاشتراك (٩٩ ج)</button>
+        <button class="btn outline" style="width:auto" onclick="closeSheet()">تراجع</button>
+      </div>`;
+  }
+  document.getElementById('sheetBack').classList.add('open');
+}
+
+async function confirmSohbaPassToggle(next) {
+  try {
+    const res = await SohbaCore.api('/api/users/sohba-pass', 'POST', { phone: CURRENT_USER.phone, active: next });
+    CURRENT_USER = res.user;
+    SohbaCore.saveUser(res.user);
+    applyKycBadgeState(res.user);
+    closeSheet();
+    renderExplore(TRIPS);
+    toast(next ? '🎫 تم تفعيل باقة المسافر الدائم على السيرفر! حجوزاتك الآن بـ ٠ ج عربون' : 'تم إلغاء الباقة');
+  } catch (err) { toast('❌ ' + err.message); }
+}
+
+function updateSearchSummary() {
+  const f = document.getElementById('sFrom')?.value || 'مرسى مطروح';
+  const to = document.getElementById('sTo')?.value || 'القاهرة';
+  const d = document.getElementById('sDate')?.value || '';
+  const px = document.getElementById('sPax')?.value || '1';
+  const el = document.getElementById('searchSummaryTxt');
+  if (el) el.textContent = `🔍 ${f} ← ${to}${d ? ' · ' + d : ''} · ${px} مقعد`;
+}
+
+function renderExplore(list) {
+  const box = document.getElementById('mobileTripsList');
+  const openList = (list || []).filter(t => t.tripStatus !== 'completed' && (t.tripStatus !== 'in_progress' || t.joined));
+  document.getElementById('tripCounter').textContent = openList.length + tr(' رحلات', ' rides');
+  const c = TRIPS.filter(t => t.joined && t.tripStatus !== 'completed').length;
+  const b = document.getElementById('navBadge');
+  b.textContent = c;
+  b.style.display = c ? 'grid' : 'none';
+
+  if (!openList.length) {
+    box.innerHTML = `<div class="card" style="grid-column:1/-1;text-align:center;padding:28px 18px">
+      <div style="width:46px;height:46px;border-radius:14px;background:var(--gbg);color:var(--green);display:grid;place-items:center;margin:0 auto 10px">${(SohbaCore&&SohbaCore.ICO)?SohbaCore.ICO.car:'🚘'}</div>
+      <b style="display:block;margin-bottom:4px">${tr('لا توجد رحلات متاحة حالياً','No available rides yet')}</b>
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:12px">${tr('بمجرد نشر كابتن لرحلة جديدة ستظهر هنا فوراً','New rides published by drivers will appear here live')}</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" style="width:auto;padding:8px 14px" onclick="toast('🔔 تم تفعيل تنبيه الرحلات الجديدة على خطك!')">🔔 ${tr('نبهني عند توفر رحلة','Notify me')}</button>
+        <button class="btn outline" style="width:auto;padding:8px 14px" onclick="quickFilter('الكل',document.querySelector('.chip'))">${tr('عرض الكل','Show All')}</button>
+      </div>
+    </div>`;
+    return;
+  }
+  const sorted = [...openList].sort((a, b) => (a.isFirstTrip ? 1 : 0) - (b.isFirstTrip ? 1 : 0));
+  box.innerHTML = sorted.map(t => {
+    const fee = hasSohbaPass ? 0 : (t.depositFee || 40);
+    const restPay = t.price - fee;
+    const trustPill = `<span style="display:inline-block;background:var(--gbg);color:var(--green);font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:6px">${tr('✓ موثق · ⭐ صُحبة موثوقة','✓ Verified · ⭐ Trusted')}</span>`;
+    return `
+    <div class="card">
+      <div class="driver-row" onclick="openTripSheet(${t.id})">
+        <div class="av">${t.avatar}</div>
+        <div class="driver-info">
+          <b>${t.driver}</b>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+            ${trustPill}
+            <span class="car-pill">${t.car}</span>
+            ${t.ladiesOnly ? `<span class="ladies-badge">👩🏻 ${tr('سيدات وعائلات','Ladies Only')}</span>` : ''}
+          </div>
+        </div>
+        <div class="rating">⭐ ${t.rating === 'جديد' ? '5.0' : t.rating}<br><span style="color:var(--muted);font-weight:400;font-size:11px">(${t.reviews || 1} ${tr('رحلة','trips')})</span></div>
+      </div>
+      <div class="timeline" onclick="openTripSheet(${t.id})" style="cursor:pointer">
+        <div><div class="time">${t.depTime}</div><div class="city">${t.from}</div></div>
+        <div class="track"></div>
+        <div><div class="time">${t.arrTime}</div><div class="city">${t.to}</div></div>
+      </div>
+      <div class="meta">
+        <span>📅 ${t.dateLabel}</span>
+        <span>💺 ${tr('متاح','Available:')} ${seatsLabel(t.seats)}</span>
+        <span>${t.tag}</span>
+      </div>
+      <div class="fare-row">
+        <div>
+          <b>${t.price} ${tr('ج.م','EGP')}</b> <small style="font-size:11px;color:var(--muted)">${tr('إجمالي الكرسي','Total/seat')}</small>
+          <span class="split-badge">${fee === 0 ? tr('٠ ج عربون (بالباقة 🎫) · ' + restPay + ' ج عند الركوب','0 EGP deposit (Pass) · ' + restPay + ' EGP cash') : tr('تأكيد ' + fee + ' ج · و' + restPay + ' ج عند الركوب','Deposit ' + fee + ' EGP · ' + restPay + ' EGP cash')}</span>
+        </div>
+        <button class="btn" style="width:auto;padding:8px 15px;${t.joined ? 'background:#15803d' : ''}" onclick="openTripSheet(${t.id})">
+          ${t.joined ? (t.boarded ? tr('✅ ركبت العربية','✅ Boarded') : tr('🎟️ تذكرتك','🎟️ Ticket')) : tr('احجز كرسيك','Book Seat')}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function swapRoute() {
+  const f = document.getElementById('sFrom');
+  const t = document.getElementById('sTo');
+  const tmp = f.value;
+  f.value = t.value;
+  t.value = tmp;
+}
+
+function quickFilter(key, btn) {
+  activeRouteFilter = key;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  if (key === 'الكل') renderExplore(TRIPS);
+  else if (key === 'LADIES') renderExplore(TRIPS.filter(x => x.ladiesOnly));
+  else {
+    const [f, t] = key.split('|');
+    renderExplore(TRIPS.filter(x => (x.from.includes(f) && x.to.includes(t)) || (x.from.includes(t) && x.to.includes(f))));
+  }
+}
+
+function runSearch() {
+  const f = document.getElementById('sFrom').value.trim();
+  const to = document.getElementById('sTo').value.trim();
+  const reqSeats = parseInt(document.getElementById('sPax').value, 10) || 1;
+  if (f === to) { toast('⚠️ اختار مدينة وصول مختلفة عن الانطلاق'); return; }
+  if (!f.includes('مطروح') && !to.includes('مطروح')) { toast('🔒 قريباً! حالياً خطوط (مطروح ⇄ القاهرة والإسكندرية) فقط'); return; }
+  const found = TRIPS.filter(x => x.from.includes(f) && x.to.includes(to) && x.seats >= reqSeats);
+  renderExplore(found);
+  toast(found.length ? `🔍 لقينا ${found.length} رحلات متاحة` : 'مفيش رحلات مطابقة لعدد المقاعد المطلوب');
+}
+
+function hasBlockedContactInfo(raw) {
+  if (!raw || typeof raw !== 'string') return false;
+  let s = raw.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[oO](?=\d)/g, '0').replace(/(\d)[oO]/g, '$10');
+  if (/(واتس|واتساب|الواتس|whatsapp|whats\s*app|wa\.me|تليجرام|تيليجرام|تلجرام|telegram|t\.me|فيسبوك|فيس\s*بوك|facebook|fb\.com|انستا|انستجرام|instagram|ماسنجر|messenger)/i.test(s)) return true;
+  if (/زيرو\s*(?:عشر[ةه]?|حد[اإ]شر|اتن[اإ]شر|خمسط[اإ]شر)|صفر\s*واحد\s*(?:صفر|واحد|اتنين|خمس[ةه])|\b01[0125]\b/i.test(s)) return true;
+  let w = s.toLowerCase()
+    .replace(/زيرو\s*عشر[ةه]?/g,'010').replace(/زيرو\s*حد[اإ]شر/g,'011').replace(/زيرو\s*اتن[اإ]شر/g,'012').replace(/زيرو\s*خمسط[اإ]شر/g,'015')
+    .replace(/عشر[ةه]/g,'10').replace(/حد[اإ]شر/g,'11').replace(/اتن[اإ]شر/g,'12').replace(/تلات[اإ]شر/g,'13').replace(/أربعتاشر/g,'14').replace(/خمسط[اإ]شر/g,'15')
+    .replace(/زيرو|صفر/g,'0').replace(/واحد/g,'1').replace(/اتنين|إثنين/g,'2').replace(/تلات[ةه]|ثلاث[ةه]/g,'3').replace(/اربع[ةه]|أربع[ةه]/g,'4')
+    .replace(/خمس[ةه]/g,'5').replace(/ست[ةه]/g,'6').replace(/سبع[ةه]/g,'7').replace(/تَ?ماني[ةه]|تمنية/g,'8').replace(/تسع[ةه]/g,'9');
+  const d1 = s.replace(/\D/g, ''), d2 = w.replace(/\D/g, '');
+  if (/(?:01[0125]\d{2,}|201[0125]\d{2,})/.test(d1) || /(?:01[0125]\d{2,}|201[0125]\d{2,})/.test(d2)) return true;
+  if (d1.length >= 5 || d2.length >= 5) return true;
+  if (/(رقمي|نمرتي|موبايلي|فون|هات رقمك|ابعت رقمك|كلمنا فون|كلمني خاص|تواصل خاص)/i.test(s)) return true;
+  return false;
+}
+
+function sendQuickPreset(id, q) {
+  const t = TRIPS.find(x => x.id === id);
+  if (!t) return;
+  t.messages.push({sender:'me', text:q});
+  openTripSheet(id, true);
+  setTimeout(() => {
+    t.messages.push({sender:'them', text:'أيوه تمام متاح ومظبوط بإذن الله 👍'});
+    if (document.getElementById('sheetBack').classList.contains('open')) openTripSheet(id, true);
+  }, 450);
+}
+
+async function sendSheetMsg(id) {
+  const inp = document.getElementById('sheetInp_' + id);
+  if (!inp) return;
+  const txt = inp.value.trim();
+  if (!txt) return;
+  const t = TRIPS.find(x => x.id === id);
+  if (!t) return;
+  const lastMe = [...t.messages].reverse().find(m => m.sender === 'me');
+  const combined = (lastMe ? lastMe.text + ' ' : '') + txt;
+  if (hasBlockedContactInfo(txt) || hasBlockedContactInfo(combined)) {
+    inp.style.borderColor = '#dc2626';
+    toast('🛡️ درع صُحبة الذكي: يُمنع تبادل أرقام الهواتف أو وسائل التواصل الخارجي!');
+    return;
+  }
+  inp.style.borderColor = '';
+  inp.value = '';
+  try {
+    await SohbaCore.api('/api/trips/' + id + '/messages', 'POST', {
+      senderPhone: CURRENT_USER.phone,
+      senderName: CURRENT_USER.name,
+      senderRole: 'passenger',
+      text: txt
+    });
+    await loadTripsFromServer(false);
+    const chatBox = document.getElementById('sheetChat_' + id);
+    if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+    if (inp) inp.focus();
+  } catch (err) {
+    toast('❌ ' + err.message);
+  }
+}
+
+function setSheetSubStep(step, id) { sheetSubStep = step; openTripSheet(id, true); }
+function selectPay(m, el) { selectedPayMethod = m; askPayConfirmId = null; if (activeSheetTripId) openTripSheet(activeSheetTripId, true); }
+const pendingUploads = {}; // { [tripId]: { bagPhotoUrl, receiptUrl } }
+
+async function handleTripDocUpload(id, kind, input) {
+  const file = input && input.files && input.files[0];
+  if (!file) return;
+  toast('⏳ جاري رفع الصورة للسيرفر...');
+  try {
+    const url = await SohbaCore.uploadImage(file, kind + '_' + id);
+    pendingUploads[id] = pendingUploads[id] || {};
+    if (kind === 'bag') pendingUploads[id].bagPhotoUrl = url;
+    else pendingUploads[id].receiptUrl = url;
+    toast(kind === 'bag' ? '📸 تم رفع صورة شنطتك للسيرفر ✓' : '🧾 تم رفع إيصال التحويل للمراجعة ✓');
+    openTripSheet(id, true);
+  } catch (err) {
+    toast('❌ ' + err.message);
+  }
+}
+async function rateTrip(id, stars) {
+  try {
+    await SohbaCore.api('/api/trips/' + id + '/rate', 'POST', { passengerPhone: CURRENT_USER.phone, rating: stars });
+    toast('⭐ شكراً لتقييمك! تم تسجيل ' + stars + ' نجوم للرحلة');
+    await loadTripsFromServer(false);
+    openTripSheet(id, true);
+  } catch (err) { toast('❌ ' + err.message); }
+}
+function openMapPin(pickup, city) { SohbaCore.openGoogleMaps(pickup, city); }
+function applyPromoCode(id) {
+  const t=TRIPS.find(x=>x.id===id); if(!t)return;
+  const code=(document.getElementById('promoInp_'+id)?.value||'').trim().toUpperCase();
+  if (!code) return;
+  const used = (CURRENT_USER && Array.isArray(CURRENT_USER.usedPromos)) ? CURRENT_USER.usedPromos : [];
+  if (used.includes(code)) {
+    toast('⚠️ تم استخدام هذا الكوبون مسبقاً — متاح مرة واحدة فقط لحسابك!');
+    return;
+  }
+  if(!t.promoApplied){ t.promoApplied=code; t.depositFee=Math.max(15,(t.depositFee||40)-10); toast('🎉 خصم ١٠ ج على العربون (للاستخدام مرة واحدة)!'); openTripSheet(id,true); }
+}
+
+async function confirmJoinWithDeposit(id) {
+  const t = TRIPS.find(x => x.id === id);
+  if (!t) return;
+  const chk = document.getElementById('passLegalChk');
+  if (chk && !chk.checked && !t.joined) { toast('⚠️ علّم صح على إقرار الشنطة الشخصية الأول'); return; }
+  try {
+    if (!t.joined) {
+      const up = pendingUploads[id] || {};
+      const needReceipt = selectedPayMethod !== 'wallet' && !hasSohbaPass;
+      if (needReceipt && !up.receiptUrl) {
+        toast('🧾 يرجى رفع صورة إيصال التحويل أولاً أو اختر الدفع من رصيد المحفظة!');
+        return;
+      }
+      if (!askPayConfirmId || askPayConfirmId !== id) {
+        askPayConfirmId = id;
+        openTripSheet(id, true);
+        return;
+      }
+      askPayConfirmId = null;
+      const bagDesc = document.getElementById('bagDesc_' + id)?.value || 'شنطة سفر متوسطة';
+      await SohbaCore.api('/api/trips/' + id + '/book', 'POST', {
+        passengerPhone: CURRENT_USER.phone,
+        passengerName: CURRENT_USER.name,
+        payMethod: selectedPayMethod || 'InstaPay',
+        bagDesc: bagDesc,
+        promoCode: t.promoApplied || '',
+        receiptUrl: up.receiptUrl || '',
+        bagPhotoUrl: up.bagPhotoUrl || ''
+      });
+      toast('🎉 مبروك! كرسيك اتأكد وظهرلك رقم اللوحة والشات');
+    } else {
+      await SohbaCore.api('/api/trips/' + id + '/cancel', 'POST', { passengerPhone: CURRENT_USER.phone });
+      toast('تم إلغاء الحجز ورد العربون لمحفظتك فوراً');
+    }
+    await loadTripsFromServer(false);
+    openTripSheet(id, true);
+  } catch (err) {
+    toast('❌ ' + err.message);
+  }
+}
+
+async function confirmBoardingCheckIn(id) {
+  const t = TRIPS.find(x => x.id === id);
+  if (!t) return;
+  const plateCheck = (prompt(`🔐 لتأكيد الركوب ومنع التلاعب:\nأعطِ كودك (${t.boardingCode}) للكابتن ليدخله عنده، أو أدخل رقم لوحة السيارة الحقيقي لتأكيد الركوب:`) || '').trim();
+  if (!plateCheck) return;
+  try {
+    await SohbaCore.api('/api/trips/' + id + '/checkin', 'POST', {
+      passengerPhone: CURRENT_USER.phone,
+      boardingCode: plateCheck,
+      verifiedByDriver: false
+    });
+    await loadTripsFromServer(false);
+    toast('🛣️ حمد لله على السلامة! تم تسجيل ركوبك وشهادة #SHB-' + (t.boardingCode || '4829'));
+    if (document.getElementById('sheetBack').classList.contains('open')) openTripSheet(id, true);
+  } catch (err) {
+    toast('❌ ' + err.message);
+  }
+}
+
+async function reportMismatchCancel(id) {
+  const plateInp = document.getElementById('mismatchPlateInp_' + id);
+  const photoInp = document.getElementById('mismatchPhotoInp_' + id);
+  const seenPlate = plateInp ? plateInp.value.trim() : '';
+  const hasPhoto = photoInp && photoInp.files && photoInp.files.length > 0;
+  if (!seenPlate || !hasPhoto) {
+    toast(tr('📸 لازم تكتب رقم اللوحة الفعلية وتصوّر العربية باللوحة صورة حية لإثبات البلاغ!', '📸 Enter the actual plate & attach a live photo of the car to submit!'));
+    return;
+  }
+  try {
+    toast('⏳ جاري رفع صورة اللوحة وإرسال البلاغ...');
+    const photoUrl = await SohbaCore.uploadImage(photoInp.files[0], 'mismatch_' + id);
+    await SohbaCore.api('/api/trips/' + id + '/mismatch', 'POST', {
+      passengerPhone: CURRENT_USER.phone,
+      actualPlate: seenPlate,
+      photoUrl: photoUrl
+    });
+    askMismatchId = null;
+    closeSheet();
+    await loadTripsFromServer(false);
+    toast(tr('🛡️ تم تعليق العربون للمراجعة (لا يُرد تلقائياً). يتم مطابقة الصورة + GPS + شهادة باقي الركاب؛ البلاغ الكاذب يُصادَر فيه العربون للكابتن.', '🛡️ Deposit placed on Escrow Hold for verification (photo + GPS + co-passengers). False reports forfeit deposit to driver.'));
+  } catch (err) {
+    toast('❌ ' + err.message);
+  }
+}
+
+function openTripSheet(id, keepStep) {
+  const t = TRIPS.find(x => x.id === id);
+  if (!t) return;
+  if (!keepStep && activeSheetTripId !== id) sheetSubStep = 'preview';
+  activeSheetTripId = id;
+  const fee = hasSohbaPass ? 0 : (t.depositFee || 40);
+  const rest = t.price - fee;
+  t.boardingCode = t.boardingCode || '4829';
+  const sheet = document.getElementById('sheetContent');
+
+  if (!t.joined) {
+    if (sheetSubStep === 'preview') {
+      sheet.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <b style="font-size:15px">تفاصيل الرحلة: ${t.from} ← ${t.to}</b>
+          <button onclick="closeSheet()" style="border:0;background:var(--inp);color:var(--ink);width:28px;height:28px;border-radius:8px;font-size:16px;cursor:pointer">×</button>
+        </div>
+        <div class="card" style="background:var(--inp);padding:9px 11px;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <b style="font-size:13px">${t.avatar} ${t.driver} · ⭐ ${t.rating} (${t.reviews} رحلة)</b>
+            <span style="font-size:10.5px;background:var(--gbg);color:var(--green);padding:2px 7px;border-radius:8px;font-weight:800">✓ موثق</span>
+          </div>
+          <div style="font-size:11.5px;color:var(--muted)">🚘 ${t.car} · 📍 التجمع: <b>${t.pickup.split('—')[0]}</b></div>
+          <div style="font-size:11.5px;color:var(--green);font-weight:800;margin-top:4px">💵 الإجمالي: ${t.price} ج.م (${fee===0?'٠ ج بالباقة 🎫':fee+' ج تأكيد · و'+rest+' ج كاش'})</div>
+        </div>
+        <div style="background:var(--gbg);border:1px solid var(--gline);border-radius:10px;padding:7px 9px;margin-bottom:8px;font-size:11px;color:var(--gink)">
+          <b>💬 آراء مسافرين سابقين مع ${t.driver}:</b><br>
+          • «التزام بالميعاد والتكييف شغال طول الطريق» ⭐ 5.0
+        </div>
+        <div style="border-top:1px dashed var(--line);padding-top:7px;margin-bottom:9px">
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">
+            <button onclick="sendQuickPreset(${t.id},'هل متاح مكان للشنطة؟')" style="border:1px solid var(--line);background:var(--card);color:var(--green);border-radius:8px;padding:4px 8px;font:700 10.5px Cairo;cursor:pointer">❓ فيه مكان للشنطة؟</button>
+            <button onclick="sendQuickPreset(${t.id},'هل التكييف شغال؟')" style="border:1px solid var(--line);background:var(--card);color:var(--green);border-radius:8px;padding:4px 8px;font:700 10.5px Cairo;cursor:pointer">❓ التكييف شغال؟</button>
+          </div>
+          <div class="chat-list" id="sheetChat_${t.id}" style="max-height:75px;margin:0 0 6px">${t.messages.map(m=>`<div class="msg ${m.sender}">${m.text}</div>`).join('')}</div>
+          <div style="display:flex;gap:6px">
+            <input id="sheetInp_${t.id}" placeholder="اسأل صاحب العربية (تبادل الأرقام محظور 🛡️)..." style="flex:1;border:1px solid var(--line);background:var(--inp);color:var(--ink);border-radius:9px;padding:7px 10px;font:11.5px Cairo" onkeydown="if(event.key==='Enter')sendSheetMsg(${t.id})">
+            <button class="btn" style="width:auto;padding:7px 12px" onclick="sendSheetMsg(${t.id})">إرسال</button>
+          </div>
+        </div>
+        <button class="btn" onclick="setSheetSubStep('checkout',${t.id})">احجز كرسيك الآن (${fee===0?'٠ ج بالباقة':fee+' ج تأكيد'})</button>`;
+    } else {
+      sheet.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <button onclick="setSheetSubStep('preview',${t.id})" style="border:0;background:var(--inp);color:var(--green);padding:4px 9px;border-radius:8px;font:800 11px Cairo;cursor:pointer">→ رجوع</button>
+          <b style="font-size:14px">تأكيد الشنطة والدفع</b>
+          <button onclick="closeSheet()" style="border:0;background:var(--inp);color:var(--ink);width:28px;height:28px;border-radius:8px;font-size:16px;cursor:pointer">×</button>
+        </div>
+        <div style="background:var(--inp);padding:8px 10px;border-radius:11px;border:1px solid var(--line);margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+            <span style="font-size:11.5px;font-weight:800;color:var(--green)">١. شنطتك الشخصية:</span>
+            <span style="font-size:10px;color:${(t.largeBagsUsed||0)>=2?'var(--red)':'var(--muted)'}">${(t.largeBagsUsed||0)>=2?'⚠️ شنطة العربية ممتلئة للشنط الكبيرة':'🧳 متاح '+ (2-(t.largeBagsUsed||0)) +' شنطة كبيرة'}</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <select id="bagDesc_${t.id}" style="flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px;font:700 11px Cairo">
+              <option>شنطة سفر متوسطة + حقيبة يد</option><option>شنطة ظهر شخصية فقط</option><option ${(t.largeBagsUsed||0)>=2?'disabled':''}>شنطة سفر كبيرة ${(t.largeBagsUsed||0)>=2?'(مكتمل)':''}</option><option>بدون حقائب</option>
+            </select>
+            <label style="border:1px solid var(--green);background:${(pendingUploads[t.id]&&pendingUploads[t.id].bagPhotoUrl)?'var(--green)':'var(--card)'};color:${(pendingUploads[t.id]&&pendingUploads[t.id].bagPhotoUrl)?'#fff':'var(--green)'};border-radius:8px;padding:6px 9px;font:700 11px Cairo;cursor:pointer">${(pendingUploads[t.id]&&pendingUploads[t.id].bagPhotoUrl)?'📸 اترفعت ✓':'📸 صور الشنطة'}<input type="file" accept="image/*" style="display:none" onchange="handleTripDocUpload(${t.id},'bag',this)"></label>
+          </div>
+        </div>
+        <div style="background:var(--inp);padding:8px 10px;border-radius:11px;border:1px solid var(--line);margin-bottom:8px">
+          ${hasSohbaPass ? `<div style="background:var(--bbg);color:var(--bink);padding:8px;border-radius:8px;font-size:11.5px;font-weight:800">🎫 مشمول في باقة المسافر الدائم (٠ ج عربون)</div>` : `
+            <div style="font-size:11.5px;font-weight:800;color:var(--green);margin-bottom:5px">٢. طريقة سداد الـ ${fee} ج تأكيد:</div>
+            <div class="pay-methods" style="grid-template-columns:repeat(2,1fr)">
+              <div class="pay-opt ${selectedPayMethod==='wallet'?'on':''}" onclick="selectPay('wallet',this)">💰 المحفظة (${(CURRENT_USER&&CURRENT_USER.walletBalance)||0} ج)</div>
+              <div class="pay-opt ${selectedPayMethod==='InstaPay'?'on':''}" onclick="selectPay('InstaPay',this)">⚡ InstaPay</div>
+              <div class="pay-opt ${selectedPayMethod==='فودافون كاش'?'on':''}" onclick="selectPay('فودافون كاش',this)">📱 فودافون كاش</div>
+              <div class="pay-opt ${selectedPayMethod==='فوري / كارت'?'on':''}" onclick="selectPay('فوري / كارت',this)">💳 فوري</div>
+            </div>
+            ${selectedPayMethod==='wallet' ? `
+              <div style="background:var(--gbg);color:var(--gink);border-radius:8px;padding:7px 9px;font-size:11px;font-weight:700;margin-top:5px">
+                ⚡ حجز فوري من رصيد المحفظة (متاح: ${(CURRENT_USER&&CURRENT_USER.walletBalance)||0} ج) — لا يحتاج إيصال أو انتظار مراجعة.
+              </div>
+            ` : `
+              <div style="background:var(--gbg);border:1px solid var(--gline);border-radius:8px;padding:6px 8px;margin-top:5px;font-size:10.5px;display:flex;justify-content:space-between;align-items:center;gap:6px">
+                <span>📲 حوّل على: <b style="color:var(--green)">01040988494</b> (شهاب · InstaPay/فودافون كاش)</span>
+                <button type="button" onclick="copyTransferNum()" style="border:1px solid var(--green);background:#fff;color:var(--green);border-radius:6px;padding:2px 7px;font:800 10px Cairo;cursor:pointer">📋 نسخ</button>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:5px 8px;margin-top:5px;font-size:10.5px">
+                <span>🧾 ${(pendingUploads[t.id]&&pendingUploads[t.id].receiptUrl) ? '<b>إيصال التحويل:</b> تم الرفع (⏳ مراجعة)' : 'ارفع صورة إيصال التحويل (إلزامي):'}</span>
+                <label style="border:1px solid var(--green);background:${(pendingUploads[t.id]&&pendingUploads[t.id].receiptUrl)?'var(--abg)':'var(--gbg)'};color:${(pendingUploads[t.id]&&pendingUploads[t.id].receiptUrl)?'var(--aink)':'var(--green)'};border-radius:6px;padding:3px 8px;font:700 10px Cairo;cursor:pointer">${(pendingUploads[t.id]&&pendingUploads[t.id].receiptUrl)?'⏳ تم الرفع ✓':'📸 إرفاق إيصال'}<input type="file" accept="image/*" style="display:none" onchange="handleTripDocUpload(${t.id},'receipt',this)"></label>
+              </div>
+            `}
+            <div style="display:flex;gap:5px;margin-top:5px">
+              <input id="promoInp_${t.id}" value="${t.promoApplied||'MATROUH10'}" style="flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:7px;padding:4px 8px;font:700 11px Cairo">
+              <button onclick="applyPromoCode(${t.id})" style="border:0;background:var(--dark-green);color:var(--lime);border-radius:7px;padding:4px 9px;font:700 11px Cairo;cursor:pointer">${t.promoApplied?'✓ تم الخصم':'تفعيل خصم ١٠ ج'}</button>
+            </div>`}
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:11px;margin-bottom:9px;cursor:pointer"><input type="checkbox" id="passLegalChk" checked style="accent-color:var(--green)"><span>شنطتي تخصني أنا بس ومش شايل طرود أو أمانات لحد.</span></label>
+        ${askPayConfirmId === t.id ? `
+          <div style="background:var(--abg);border:1.5px solid var(--aline);border-radius:12px;padding:10px;font-size:11.5px">
+            <b style="display:block;margin-bottom:6px">⚠️ تأكيد الدفع: خصم/دفع ${fee} ج.م (${selectedPayMethod === 'wallet' ? 'من رصيد المحفظة' : selectedPayMethod})؟</b>
+            <div style="display:flex;gap:6px">
+              <button class="btn" style="flex:1;padding:8px" onclick="confirmJoinWithDeposit(${t.id})">✅ نعم، أكّد الدفع والحجز</button>
+              <button class="btn outline" style="width:auto;padding:8px 12px" onclick="askPayConfirmId=null;openTripSheet(${t.id},true)">تراجع</button>
+            </div>
+          </div>
+        ` : `<button class="btn" onclick="confirmJoinWithDeposit(${t.id})">✅ ادفع ${fee} ج وأكّد كرسيك الآن</button>`}`;
+    }
+  } else if (!t.boarded) {
+    const recOk = t.receiptStatus === 'approved';
+    sheet.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <b style="font-size:15px">🎟️ تذكرتك (#SHB-${recOk ? t.boardingCode : 'قيد الاعتماد'})</b>
+        <button onclick="closeSheet()" style="border:0;background:var(--inp);color:var(--ink);width:28px;height:28px;border-radius:8px;font-size:16px;cursor:pointer">×</button>
+      </div>
+      <div class="card" style="background:var(--gbg);border-color:var(--green);padding:10px;margin-bottom:8px;font-size:11.5px">
+        🚘 <b>${t.car}</b> · اللوحة: <b>${recOk ? t.plate : '🔒 تظهر بعد اعتماد الإيصال'}</b><br>
+        📍 التجمع: <b>${recOk ? t.pickup : '🔒 يظهر بعد اعتماد الإيصال'}</b> ${recOk ? `<button onclick="openMapPin('${t.pickup}','${t.from}')" style="border:1px solid var(--green);background:var(--card);color:var(--green);border-radius:6px;padding:1px 6px;font:700 10px Cairo;cursor:pointer">🗺️ خريطة</button>` : ''}<br>
+        💵 المتبقي كاش: <b>${rest} ج.م</b>
+      </div>
+      ${tripStageBanner(t)}
+      ${receiptStatusBanner(t)}
+      ${!recOk ? `
+        <div style="background:var(--abg);color:var(--aink);border:1px solid var(--aline);border-radius:10px;padding:10px;margin-bottom:8px;font-size:11.5px;font-weight:700">
+          ⏳ بمجرد اعتماد إيصال التحويل من الإدارة سيظهر لك رقم اللوحة ونقطة التجمع والشات فوراً.
+        </div>
+      ` : `
+      <div style="background:var(--abg);color:var(--aink);border:1px solid var(--aline);border-radius:10px;padding:8px;margin-bottom:8px;font-size:11px">
+        ⏰ مهلة الانتظار ١٥ دقيقة فقط · 🪑 المسافر الأول يجلس بالكرسي الأمامي كصُحبة طريق.
+      </div>
+      <button class="btn" style="margin-bottom:6px" onclick="confirmBoardingCheckIn(${t.id})">${tr('✅ أنا وصلت وركبت العربية خلاص','✅ I Arrived & Boarded')}</button>
+      ${askMismatchId === t.id ? `
+        <div style="background:var(--rbg);border:1px solid #fca5a5;border-radius:10px;padding:10px;margin-bottom:8px;font-size:11px">
+          <b style="color:var(--red);display:block;margin-bottom:4px">🛡️ ${tr('توثيق بلاغ اختلاف اللوحة (ممنوع الاسترداد الوهمي)','Verify Plate Mismatch (Anti-Fraud Check)')}</b>
+          <div style="color:#7f1d1d;font-size:10.5px;line-height:1.5;margin-bottom:6px">
+            • العربون يُعلّق للمراجعة <b>ولا يُرد تلقائياً</b>.<br>
+            • يتم التحقق من <b>الصورة الحية + موقع GPS + شهادة باقي الركاب والكابتن</b>.<br>
+            • <b>البلاغ الكاذب = مصادرة العربون للكابتن + حظر الحساب نهائياً.</b>
+          </div>
+          <input id="mismatchPlateInp_${t.id}" placeholder="${tr('اكتب رقم اللوحة الفعلية أمامك...','Enter actual plate number...')}" style="width:100%;box-sizing:border-box;border:1px solid #fca5a5;border-radius:8px;padding:6px 8px;font:700 11.5px Cairo;margin-bottom:6px;background:#fff;color:#111">
+          <label style="display:block;font-weight:700;color:var(--red);margin-bottom:6px;cursor:pointer">
+            📸 ${tr('تصوير حي للعربية واللوحة (إلزامي):','Live photo of car & plate (Required):')}
+            <input id="mismatchPhotoInp_${t.id}" type="file" accept="image/*" capture="environment" style="display:block;margin-top:4px;font-size:10.5px;width:100%">
+          </label>
+          <div style="display:flex;gap:6px">
+            <button class="btn" style="background:var(--red);padding:6px" onclick="reportMismatchCancel(${t.id})">${tr('إرسال البلاغ بالإثبات','Submit Verified Report')}</button>
+            <button class="btn outline" style="padding:6px" onclick="askMismatchId=null;openTripSheet(${t.id},true)">${tr('تراجع','Back')}</button>
+          </div>
+        </div>
+      ` : `<button class="btn outline" style="color:var(--red);border-color:#fca5a5;margin-bottom:8px" onclick="askMismatchId=${t.id};openTripSheet(${t.id},true)">${tr('🚨 بلاغ أمان عاجل / اللوحة مختلفة','🚨 Urgent Safety Report / Plate Mismatch')}</button>`}
+      <div class="chat-list" id="sheetChat_${t.id}" style="max-height:85px">${t.messages.map(m=>`<div class="msg ${m.sender}">${m.text}</div>`).join('')}</div>
+      <div style="display:flex;gap:6px">
+        <input id="sheetInp_${t.id}" placeholder="اكتب رسالة لصاحب العربية..." style="flex:1;border:1px solid var(--line);background:var(--inp);color:var(--ink);border-radius:9px;padding:7px 10px;font:11.5px Cairo" onkeydown="if(event.key==='Enter')sendSheetMsg(${t.id})">
+        <button class="btn" style="width:auto;padding:7px 12px" onclick="sendSheetMsg(${t.id})">إرسال</button>
+      </div>`}`;
+  } else {
+    sheet.innerHTML = `
+      <div style="text-align:center;padding:12px">
+        <div style="font-size:32px">✅🚙</div>
+        <b style="font-size:15px;color:var(--green)">شهادة ركوب وحيازة (#SHB-${t.boardingCode})</b>
+        <p style="font-size:12px;color:var(--muted);margin:6px 0 10px">شنطتك متوثقة باسمك · سلم صاحب العربية ${rest} ج.م كاش وتوصل بالسلامة.</p>
+        <div style="background:var(--inp);border:1px solid var(--line);border-radius:12px;padding:9px;margin-bottom:10px">
+          <b style="font-size:11.5px;display:block;margin-bottom:5px">⭐ قيّم تجربتك مع ${t.driver}:</b>
+          <div style="display:flex;justify-content:center;gap:6px">
+            ${[1,2,3,4,5].map(n => `<button onclick="rateTrip(${t.id},${n})" style="border:1px solid var(--line);background:${(t.userRating||0)>=n?'#f59e0b':'var(--card)'};color:${(t.userRating||0)>=n?'#fff':'var(--ink)'};border-radius:8px;padding:4px 9px;font:700 12px Cairo;cursor:pointer">★ ${n}</button>`).join('')}
+          </div>
+        </div>
+        <button class="btn sec" style="margin-bottom:8px" onclick="toast('📍 تم نسخ رابط التتبع للأهل')">📍 مشاركة موقعي مع أهلي</button>
+        <button class="btn outline" onclick="closeSheet()">إغلاق</button>
+      </div>`;
+  }
+  document.getElementById('sheetBack').classList.add('open');
+}
+
+function openPoliciesSheet() {
+  document.getElementById('sheetContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <b style="font-size:15px">📜 ${tr('سياسات وقواعد صُحبة (اضغط على أي بند للتفاصيل)','Sohba Policies (Tap any item for details)')}</b>
+      <button onclick="closeSheet()" style="border:0;background:var(--inp);color:var(--ink);width:28px;height:28px;border-radius:8px;font-size:16px;cursor:pointer">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:11.5px;line-height:1.6">
+      <details style="background:var(--inp);border:1px solid var(--line);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;color:var(--green);display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>١. ${tr('سفر تشاركي لتقسيم البنزين','1. Fuel Cost-Sharing Ride')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);color:var(--ink)">
+          ${tr('• «صُحبة» تربطك بأصحاب السيارات الملاكي على خطوط مطروح ⇄ القاهرة والإسكندرية لتقاسم تكلفة البنزين.<br>• تدفع عربون تأكيد الكرسي أونلاين وتسلّم باقي المساهمة كاش لصاحب العربية عند الركوب.','• Peer-to-peer rides on Matrouh routes to split fuel costs.<br>• Pay confirmation deposit online and the remaining cash share at pickup.')}
+        </div>
+      </details>
+
+      <details style="background:var(--inp);border:1px solid var(--line);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;color:var(--green);display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>٢. ${tr('توثيق الأمتعة ومنع الطرود المجهولة (#SHB)','2. Luggage Verification & Parcel Ban (#SHB)')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);color:var(--ink)">
+          ${tr('• شنطتك تخصك شخصياً ويُحظر حمل أي طرود أو أمانات لأشخاص آخرين.<br>• عند الحجز توثق حجم وصورة الشنطة ويصدر لك كود رقمي (#SHB) لراحتك وأمانك طول الطريق.','• Unattended parcels are strictly banned.<br>• Declare and photograph your luggage to get a digital #SHB verification code.')}
+        </div>
+      </details>
+
+      <details style="background:var(--bbg);border:1px solid var(--bline);color:var(--bink);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>٣. ${tr('الخصوصية وحذف المستندات خلال ٣٠ يوماً','3. Privacy & 30-Day Auto-Purge')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--bline)">
+          ${tr('• التسجيل للمسافر برقم الموبايل فقط.<br>• لو اخترت توثيق البطاقة اختيارياً للحصول على شارة الثقة، تُشفر الصورة وتُحذف تلقائياً ونهائياً خلال ٣٠ يوماً.','• Phone-only signup for passengers.<br>• Optional ID photos are encrypted and permanently purged after 30 days.')}
+        </div>
+      </details>
+
+      <details style="background:var(--abg);border:1px solid var(--aline);color:var(--aink);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>٤. ${tr('سياسة الإلغاء ومهلة الانتظار ١٥ دقيقة','4. Cancellation Policy & 15-Min Grace')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--aline)">
+          ${tr('• إلغاء قبل الموعد بـ +٣ ساعات = استرداد ١٠٠٪ · أقل من ٣ ساعات = استرداد ٥٠٪ · إلغاء صاحب العربية = استرداد ١٠٠٪ فوراً.<br>• مهلة الانتظار في نقطة التجمع ١٥ دقيقة فقط.','• 3h+ cancel = 100% refund · under 3h = 50% · owner cancel = 100% refund.<br>• 15-minute wait limit at pickup.')}
+        </div>
+      </details>
+
+      <details style="background:var(--inp);border:1px solid var(--line);border-radius:11px;padding:9px 11px;cursor:pointer">
+        <summary style="font-weight:800;color:var(--green);display:flex;justify-content:space-between;align-items:center;list-style:none">
+          <span>٥. ${tr('درع الشات الذكي وحماية البيانات 🛡️','5. Smart Chat Shield & Data Safety 🛡️')}</span><span>▾</span>
+        </summary>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);color:var(--ink)">
+          ${tr('• يمنع النظام تلقائياً إرسال أرقام الهواتف أو روابط التواصل الخارجي داخل الشات لضمان أمانك وحفظ حقك.<br>• رقم لوحة السيارة يظهر لك فور تأكيد الكرسي.','• Phone numbers and external links are automatically blocked in chat.<br>• Car plate number unlocks immediately after booking confirmation.')}
+        </div>
+      </details>
+    </div>
+    <button class="btn" style="margin-top:10px" onclick="closeSheet()">${tr('فهمت، إغلاق','Got it, Close')}</button>`;
+  document.getElementById('sheetBack').classList.add('open');
+}
+
+function closeSheet() { activeSheetTripId = null; askMismatchId = null; document.getElementById('sheetBack').classList.remove('open'); }
+
+function tripStageBanner(t) {
+  const step = t.tripStatus === 'completed' ? 4 : t.tripStatus === 'in_progress' ? 3 : (t.tripStatus === 'ready' || t.gpsConfirmed) ? 2 : 1;
+  const stepper = `<div class="stepper-4">
+    <div class="st-i ${step>=1?'done':''}"><div class="st-d">${step>=1?'✓':'1'}</div><span>حجز</span></div>
+    <div class="st-i ${step>=2?'done':''}"><div class="st-d">${step>=2?'✓':'2'}</div><span>جاهز</span></div>
+    <div class="st-i ${step>=3?'done':''}"><div class="st-d">${step>=3?'✓':'3'}</div><span>في الطريق</span></div>
+    <div class="st-i ${step>=4?'done':''}"><div class="st-d">${step>=4?'✓':'4'}</div><span>وصلنا</span></div>
+  </div>`;
+  if (t.tripStatus === 'in_progress') {
+    return stepper + `<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px;font-size:11px;color:#1e40af;font-weight:800"><span>🛣️ في الطريق إلى ${t.to}</span><button onclick="shareRouteWithFamily(${t.id})" style="border:0;background:#1d4ed8;color:#fff;padding:4px 9px;border-radius:7px;font:700 10px Cairo;cursor:pointer">📍 شارك الأسرة</button></div>`;
+  }
+  return stepper;
+}
+
+function shareRouteWithFamily(id) {
+  const t = TRIPS.find(x => x.id === id);
+  if (!t) return;
+  const msg = `رحلتي مع تطبيق صُحبة: من ${t.from} إلى ${t.to} | السيارة: ${t.car} | اللوحة: ${t.plate} | الكابتن: ${t.driver} | كود الشهادة: #SHB-${t.boardingCode || '4829'}`;
+  if (navigator.share) {
+    navigator.share({ title: 'خط سيري في رحلة صُحبة', text: msg }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(msg).then(() => toast('📋 تم نسخ بيانات الرحلة واللوحة لمشاركتها مع الأسرة'));
+  } else {
+    toast(msg);
+  }
+}
+
+function receiptStatusBanner(t) {
+  if (t.receiptStatus === 'approved') {
+    return `<div style="background:#dcfce7;color:#15803d;border:1px solid #86efac;border-radius:10px;padding:7px 10px;margin-bottom:8px;font-size:11px;font-weight:800">✅ تم قبول واعتماد إيصال التحويل من الإدارة</div>`;
+  }
+  if (t.receiptStatus === 'rejected') {
+    return `<div style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;border-radius:10px;padding:8px 10px;margin-bottom:8px;font-size:11px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:6px"><span>❌ تم رفض إيصال التحويل — يرجى إعادة رفع صورة واضحة</span><label style="background:#b91c1c;color:#fff;padding:4px 8px;border-radius:7px;cursor:pointer;white-space:nowrap">📸 إعادة الرفع<input type="file" accept="image/*" style="display:none" onchange="reuploadTripReceipt(${t.id},this)"></label></div>`;
+  }
+  if (t.receiptStatus === 'pending') {
+    return `<div style="background:#fef3c7;color:#b45309;border:1px solid #fcd34d;border-radius:10px;padding:7px 10px;margin-bottom:8px;font-size:11px;font-weight:800">⏳ إيصال التحويل قيد مراجعة الإدارة (لم يتم البت فيه بعد)</div>`;
+  }
+  return '';
+}
+
+async function reuploadTripReceipt(id, input) {
+  const file = input && input.files && input.files[0];
+  if (!file) return;
+  toast('⏳ جاري رفع الإيصال الجديد...');
+  try {
+    const url = await SohbaCore.uploadImage(file, 'receipt_' + id);
+    await SohbaCore.api('/api/trips/' + id + '/docs', 'POST', { passengerPhone: CURRENT_USER.phone, receiptUrl: url });
+    await loadTripsFromServer(false);
+    toast('⏳ تم رفع الإيصال الجديد وهو الآن قيد مراجعة الإدارة');
+  } catch (err) { toast('❌ ' + err.message); }
+}
+
+function renderMyTrips() {
+  const box = document.getElementById('myTripsContainer');
+  const joined = TRIPS.filter(t => t.joined);
+  const active = joined.filter(t => t.tripStatus !== 'completed');
+  const past = joined.filter(t => t.tripStatus === 'completed');
+  if (!joined.length) {
+    box.innerHTML = `<div class="card" style="text-align:center;padding:24px"><b>${tr('لسه محجزتش أي كرسي','No booked seats yet')}</b><button class="btn" style="margin-top:10px" onclick="go('explore')">${tr('🔍 استكشف الرحلات المتاحة','🔍 Explore Rides')}</button></div>`;
+    return;
+  }
+  const renderCard = (t) => {
+    const fee = hasSohbaPass ? 0 : (t.depositFee || 40);
+    const rest = t.price - fee;
+    return `
+    <div class="card">
+      <b style="font-size:14px;display:block">${t.from} ← ${t.to} (${t.depTime})</b>
+      <div style="font-size:11.5px;color:var(--muted);margin:4px 0 8px">
+        🚘 ${t.car} · ${tr('لوحة:','Plate:')} <b>${t.receiptStatus==='approved' ? t.plate : '🔒 بعد اعتماد الإيصال'}</b><br>📍 ${tr('التجمع:','Pickup:')} <b>${t.receiptStatus==='approved' ? t.pickup : '🔒 بعد اعتماد الإيصال'}</b> · ${tr('المتبقي كاش:','Cash at pickup:')} <b>${rest} ${tr('ج','EGP')}</b>
+      </div>
+      ${tripStageBanner(t)}
+      ${receiptStatusBanner(t)}
+      ${askCancelId === t.id ? `
+        <div style="background:var(--rbg);border:1px solid #fca5a5;border-radius:10px;padding:8px;font-size:11px">
+          <b style="color:var(--red);display:block;margin-bottom:3px">⚠️ ${tr('متأكد من إلغاء الحجز؟','Confirm booking cancellation?')}</b>
+          <div style="font-size:10.5px;color:var(--ink);margin-bottom:6px">⏱️ ${tr('سياسة الإلغاء: استرداد ١٠٠٪ قبل السفر بـ +٣ ساعات · ٥٠٪ لو أقل من ٣ ساعات.','Policy: 100% refund 3h+ before departure · 50% if under 3h.')}</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn" style="background:var(--red);padding:6px" onclick="askCancelId=null;confirmJoinWithDeposit(${t.id});renderMyTrips()">${tr('تأكيد الإلغاء','Confirm Cancel')}</button>
+            <button class="btn outline" style="padding:6px" onclick="askCancelId=null;renderMyTrips()">${tr('تراجع','Back')}</button>
+          </div>
+        </div>
+      ` : `
+        <div style="display:flex;gap:6px">
+          <button class="btn sec" style="flex:1" onclick="openTripSheet(${t.id})">${tr('🎟️ التذكرة والشات','🎟️ Ticket & Chat')}</button>
+          ${t.tripStatus !== 'completed' ? `<button class="btn outline" style="width:auto" onclick="askCancelId=${t.id};renderMyTrips()">${tr('إلغاء الحجز','Cancel Booking')}</button>` : ''}
+        </div>
+      `}
+    </div>`;
+  };
+  let html = active.length ? active.map(renderCard).join('') : `<div class="card" style="text-align:center;padding:18px"><b>${tr('لا توجد رحلات حالية','No active trips')}</b><button class="btn" style="margin-top:8px" onclick="go('explore')">${tr('🔍 استكشف الرحلات المتاحة','🔍 Explore Rides')}</button></div>`;
+  if (past.length) {
+    html += `<details style="margin-top:10px"><summary style="cursor:pointer;font:800 13px Cairo;color:var(--muted);padding:8px 4px">📜 ${tr('الرحلات السابقة','Previous Trips')} (${past.length})</summary><div style="margin-top:6px">${past.map(renderCard).join('')}</div></details>`;
+  }
+  box.innerHTML = html;
+}
+
+initApp();
+renderExplore(TRIPS);
+</script>
+</body>
+</html>

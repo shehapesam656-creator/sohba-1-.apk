@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>صُحبة — لوحة مراجعة وتوثيق الأدمن</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--g:#124436;--g2:#176b52;--lime:#d8f277;--bg:#f4f6f1;--card:#fff;--ink:#182c28;--muted:#64748b;--line:#e2e8e2;--red:#dc2626;--amber:#d97706;--green:#16a34a}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Cairo','Segoe UI',Tahoma,sans-serif}
+  header{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800}
+  .brand img{width:40px;height:40px;border-radius:10px;object-fit:cover;border:1.5px solid rgba(216,242,119,.5)}
+  .wrap{max-width:1240px;margin:0 auto;padding:18px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px;margin-bottom:16px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+  .kpi small{display:block;color:var(--muted);font-size:11.5px;font-weight:700}
+  .kpi b{font-size:22px;color:var(--g);display:block;margin-top:2px}
+  .kpi span{font-size:11px;color:var(--muted)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .tab{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:12px;font:700 13px Cairo;cursor:pointer}
+  .tab.on{background:var(--g);color:#fff;border-color:var(--g)}
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .chip{border:1px solid var(--line);background:#fff;color:var(--muted);padding:5px 12px;border-radius:20px;font:700 11.5px Cairo;cursor:pointer}
+  .chip.on{background:var(--g2);color:#fff;border-color:var(--g2)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(355px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+  .badge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .b-pend{background:#fef3c7;color:#b45309}
+  .b-ok{background:#dcfce7;color:#15803d}
+  .b-bad{background:#fee2e2;color:#b91c1c}
+  .b-gray{background:#f1f5f9;color:#475569}
+  .b-blue{background:#dbeafe;color:#1d4ed8}
+  .docs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+  .doc{border:1px solid var(--line);border-radius:10px;padding:6px;text-align:center;background:#f8faf8;font-size:11px}
+  .doc img{width:100%;height:78px;object-fit:cover;border-radius:7px;cursor:zoom-in;display:block;margin-bottom:4px;background:#e2e8e2}
+  .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .btn{border:0;border-radius:10px;padding:7px 12px;font:700 12px Cairo;cursor:pointer;color:#fff;background:var(--g2)}
+  .btn.red{background:var(--red)}
+  .btn.amber{background:var(--amber)}
+  .btn.gray{background:#475569}
+  .empty{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:32px;text-align:center;color:var(--muted);font-weight:700}
+  .pax-item{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:#fff;border:1px solid var(--line);border-radius:8px;margin-top:4px;font-size:11.5px}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
+  .modal.on{display:flex}
+  .modal img{max-width:95vw;max-height:90vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#124436;color:#fff;padding:10px 18px;border-radius:12px;font-weight:700;font-size:13px;display:none;z-index:1000;box-shadow:0 10px 25px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <img src="./icon-192.png" alt="صُحبة">
+    <div>لوحة مراجعة وتشغيل الأدمن — صُحبة<div style="font-size:11px;font-weight:600;color:var(--lime)" id="srvStatus">متصل بالسيرفر المباشر</div></div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="btn" style="background:var(--lime);color:var(--g)" onclick="loadOverview(true)">🔄 تحديث البيانات</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="kpis" id="kpis"></div>
+
+  <div class="tabs">
+    <button class="tab on" data-tab="kyc" onclick="setTab('kyc',this)">🪪 توثيق الحسابات والصور</button>
+    <button class="tab" data-tab="receipts" onclick="setTab('receipts',this)">🧾 إيصالات التحويل والشنط</button>
+    <button class="tab" data-tab="reports" onclick="setTab('reports',this)">🚨 بلاغات اختلاف اللوحة</button>
+    <button class="tab" data-tab="trips" onclick="setTab('trips',this)">🚘 تفاصيل الرحلات والعمليات</button>
+  </div>
+
+  <div class="filters" id="subFilters"></div>
+  <div id="viewContainer"></div>
+</div>
+
+<div class="modal" id="imgModal" onclick="this.classList.remove('on')">
+  <img id="zoomImg" src="" alt="معاينة">
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = window.location.protocol.startsWith('http') ? window.location.origin : 'http://192.168.1.110:3000';
+let STATE = { users: [], trips: [], reports: [], topups: [] };
+let activeTab = 'kyc';
+let subFilter = 'all';
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+function zoom(src) {
+  if (!src) return;
+  document.getElementById('zoomImg').src = src;
+  document.getElementById('imgModal').classList.add('on');
+}
+
+function setTab(t, btn) {
+  activeTab = t;
+  subFilter = 'all';
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b === btn));
+  render();
+}
+
+function setFilter(f) {
+  subFilter = f;
+  render();
+}
+
+async function api(path, method, body) {
+  const res = await fetch(API_BASE + path, {
+    method: method || 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'خطأ في السيرفر');
+  return data;
+}
+
+async function loadOverview(notify) {
+  try {
+    STATE = await api('/api/admin/overview');
+    document.getElementById('srvStatus').textContent = '🟢 متصل (' + API_BASE + ') · آخر تحديث: ' + new Date().toLocaleTimeString('ar-EG');
+    render();
+    if (notify) toast('✅ تم تحديث البيانات');
+  } catch (err) {
+    document.getElementById('srvStatus').textContent = '🔴 غير متصل: ' + err.message;
+  }
+}
+
+async function verifyUser(id, action) {
+  const note = action === 'reject' ? (prompt('سبب الرفض (اختياري):') || '') : '';
+  await api('/api/admin/users/' + id + '/verify', 'POST', { action, note });
+  toast(action === 'approve' ? '✅ تم اعتماد وتوثيق الحساب' : '❌ تم رفض التوثيق');
+  loadOverview(false);
+}
+
+async function banUser(id, banned) {
+  await api('/api/admin/users/' + id + '/ban', 'POST', { banned });
+  toast(banned ? '🚫 تم حظر الحساب' : '✅ تم فك الحظر');
+  loadOverview(false);
+}
+
+async function verifyReceipt(tripId, passengerPhone, action) {
+  await api('/api/admin/bookings/verify', 'POST', { tripId, passengerPhone, action });
+  toast(action === 'approve' ? '✅ تم اعتماد إيصال التحويل' : '❌ تم رفض الإيصال');
+  loadOverview(false);
+}
+
+async function verifyTopup(id, action) {
+  await api('/api/admin/topups/' + id + '/verify', 'POST', { action });
+  toast(action === 'approve' ? '✅ تم اعتماد الشحن وإضافة المبلغ للمحفظة' : '❌ تم رفض طلب الشحن');
+  loadOverview(false);
+}
+
+async function resolveReport(id, resolution) {
+  await api('/api/admin/reports/' + id + '/resolve', 'POST', { resolution });
+  toast(resolution === 'refund_passenger' ? '💸 تم اعتماد البلاغ ورد العربون للمسافر' : '⚖️ تم رفض البلاغ ومصادرة العربون للكابتن');
+  loadOverview(false);
+}
+
+function docBox(label, url) {
+  if (!url) return `<div class="doc"><div style="height:78px;display:grid;place-items:center;color:#94a3b8">غير مرفوعة</div><b>${label}</b></div>`;
+  const full = API_BASE + url;
+  return `<div class="doc"><img src="${full}" onclick="zoom('${full}')" alt="${label}"><b>${label}</b></div>`;
+}
+
+function getTripStage(t) {
+  if (t.status === 'completed') return 'completed';
+  const activeBks = (t.bookings || []).filter(b => b.status !== 'cancelled' && b.status !== 'mismatch_pending');
+  const boardedCount = activeBks.filter(b => b.status === 'boarded').length;
+  if (activeBks.length > 0 && boardedCount === activeBks.length && t.seats === 0) return 'completed';
+  if (activeBks.length > 0 || boardedCount > 0 || t.status === 'in_progress' || t.status === 'ready') return 'ongoing';
+  return 'available';
+}
+
+function renderFilters(items) {
+  document.getElementById('subFilters').innerHTML = items.map(([key, label]) =>
+    `<button class="chip ${subFilter === key ? 'on' : ''}" onclick="setFilter('${key}')">${label}</button>`
+  ).join('');
+}
+
+function render() {
+  const pendingKyc = STATE.users.filter(u => u.kycStatus === 'pending').length;
+  const ownersCount = STATE.users.filter(u => u.role === 'owner').length;
+  const paxCount = STATE.users.filter(u => u.role !== 'owner').length;
+
+  const allBookings = [];
+  STATE.trips.forEach(t => (t.bookings || []).forEach(b => allBookings.push({ trip: t, bk: b })));
+  const activeBookings = allBookings.filter(x => x.bk.status !== 'cancelled');
+  const boardedTotal = activeBookings.filter(x => x.bk.status === 'boarded').length;
+  const pendingRec = activeBookings.filter(x => x.bk.receiptStatus === 'pending').length;
+  const approvedDeposits = activeBookings.filter(x => x.bk.receiptStatus === 'approved').reduce((s, x) => s + (x.bk.depositPaid || x.trip.depositFee || 40), 0);
+  const pendingRep = STATE.reports.filter(r => r.status === 'escrow_hold').length;
+
+  const ongoingTrips = STATE.trips.filter(t => getTripStage(t) === 'ongoing').length;
+  const completedTrips = STATE.trips.filter(t => getTripStage(t) === 'completed').length;
+  const availableTrips = STATE.trips.filter(t => getTripStage(t) === 'available').length;
+
+  document.getElementById('kpis').innerHTML = `
+    <div class="kpi"><small>إجمالي الحسابات</small><b>${STATE.users.length}</b><span>🚘 ${ownersCount} كابتن · 🎒 ${paxCount} مسافر</span></div>
+    <div class="kpi"><small>توثيق بانتظار المراجعة</small><b style="color:${pendingKyc?'var(--amber)':'var(--g)'}">${pendingKyc}</b><span>طلبات KYC بالصور</span></div>
+    <div class="kpi"><small>إيصالات تحويل معلقة</small><b style="color:${pendingRec?'var(--amber)':'var(--g)'}">${pendingRec}</b><span>إجمالي العربون المعتمد: ${approvedDeposits} ج</span></div>
+    <div class="kpi"><small>حالة الرحلات</small><b>${STATE.trips.length}</b><span>🟢 جارية: ${ongoingTrips} · 🟡 متاحة: ${availableTrips} · ✅ تمت: ${completedTrips}</span></div>
+    <div class="kpi"><small>حالة الركاب وبلاغات الأمان</small><b>${activeBookings.length} حجز</b><span>✅ ركبوا: ${boardedTotal} · 🚨 بلاغات معلقة: ${pendingRep}</span></div>
+  `;
+
+  const box = document.getElementById('viewContainer');
+
+  if (activeTab === 'kyc') {
+    renderFilters([
+      ['all', `الكل (${STATE.users.length})`],
+      ['pending', `⏳ بانتظار المراجعة (${pendingKyc})`],
+      ['approved', `✅ موثقين`],
+      ['owner', `🚘 أصحاب سيارات (${ownersCount})`],
+      ['passenger', `🎒 مسافرين (${paxCount})`],
+      ['banned', `🚫 محظورين`]
+    ]);
+    const list = STATE.users.filter(u => {
+      if (subFilter === 'pending') return u.kycStatus === 'pending';
+      if (subFilter === 'approved') return u.kycStatus === 'approved' || u.verified;
+      if (subFilter === 'owner') return u.role === 'owner';
+      if (subFilter === 'passenger') return u.role !== 'owner';
+      if (subFilter === 'banned') return u.banned;
+      return true;
+    });
+    if (!list.length) { box.innerHTML = '<div class="empty">لا توجد حسابات مطابقة لهذا التصنيف</div>'; return; }
+    box.innerHTML = '<div class="grid">' + list.map(u => {
+      const st = u.banned ? '<span class="badge b-bad">محظور</span>'
+        : u.kycStatus === 'approved' ? '<span class="badge b-ok">✓ موثق</span>'
+        : u.kycStatus === 'rejected' ? '<span class="badge b-bad">مرفوض</span>'
+        : u.kycStatus === 'pending' ? '<span class="badge b-pend">⏳ بانتظار المراجعة</span>'
+        : '<span class="badge b-gray">برقم الموبايل فقط</span>';
+      const docs = u.kycDocs || {};
+      return `<div class="card">
+        <div class="row"><b>${u.role === 'owner' ? '🚘 صاحب عربية' : '🎒 مسافر'} · ${u.name}</b>${st}</div>
+        <div style="font-size:12px;color:var(--muted)">📱 ${u.phone} ${u.sos ? '· 🆘 طوارئ: ' + u.sos : ''}</div>
+        ${u.role === 'owner' ? `<div style="font-size:12px;margin-top:4px;font-weight:700">🚗 ${u.car}${u.carColor ? ' · ' + u.carColor : ''} · اللوحة: <span style="color:var(--g)">${u.plate}</span> · ${u.acWorking !== false ? '❄️ تكييف شغال' : 'بدون تكييف'}</div>` : ''}
+        <div class="docs" style="grid-template-columns:repeat(${u.role==='owner'?4:2},1fr)">
+          ${docBox('البطاقة', docs.nidUrl)}
+          ${docBox('سيلفي', docs.selfieUrl)}
+          ${u.role === 'owner' ? docBox('الرخصة', docs.licenseUrl) + docBox('صورة العربية', docs.carPhotoUrl) : ''}
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="verifyUser(${u.id},'approve')">✅ اعتماد التوثيق</button>
+          <button class="btn red" onclick="verifyUser(${u.id},'reject')">❌ رفض</button>
+          <button class="btn gray" onclick="banUser(${u.id},${!u.banned})">${u.banned ? '🔓 فك الحظر' : '🚫 حظر'}</button>
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+  } else if (activeTab === 'receipts') {
+    const topups = STATE.topups || [];
+    const pendTopups = topups.filter(x => x.status === 'pending').length;
+    renderFilters([
+      ['all', `حجوزات (${activeBookings.length})`],
+      ['topups', `💰 شحن محفظة (${pendTopups} معلق)`],
+      ['pending', `⏳ إيصالات رحلات (${pendingRec})`],
+      ['approved', `✅ مقبولة`],
+      ['rejected', `❌ مرفوضة`]
+    ]);
+    if (subFilter === 'topups') {
+      if (!topups.length) { box.innerHTML = '<div class="empty">لا توجد طلبات شحن محفظة حتى الآن</div>'; return; }
+      box.innerHTML = '<div class="grid">' + topups.map(tp => {
+        const st = tp.status === 'approved' ? '<span class="badge b-ok">✓ تم الشحن</span>' : tp.status === 'rejected' ? '<span class="badge b-bad">مرفوض</span>' : '<span class="badge b-pend">⏳ بانتظار المراجعة</span>';
+        return `<div class="card">
+          <div class="row"><b>💰 شحن ${tp.amount} ج.م · ${tp.name}</b>${st}</div>
+          <div style="font-size:12px;color:var(--muted)">📱 ${tp.phone} · 💳 ${tp.method}</div>
+          <div class="docs" style="grid-template-columns:1fr">${docBox('إيصال شحن المحفظة', tp.receiptUrl)}</div>
+          ${tp.status === 'pending' ? `<div class="actions"><button class="btn" onclick="verifyTopup(${tp.id},'approve')">✅ اعتماد وإضافة للمحفظة</button><button class="btn red" onclick="verifyTopup(${tp.id},'reject')">❌ رفض</button></div>` : ''}
+        </div>`;
+      }).join('') + '</div>';
+      return;
+    }
+    const list = activeBookings.filter(({ bk }) => subFilter === 'all' ? true : bk.receiptStatus === subFilter);
+    if (!list.length) { box.innerHTML = '<div class="empty">لا توجد إيصالات في هذا التصنيف</div>'; return; }
+    box.innerHTML = '<div class="grid">' + list.map(({ trip, bk }) => {
+      const st = bk.receiptStatus === 'approved' ? '<span class="badge b-ok">✓ معتمد</span>'
+        : bk.receiptStatus === 'rejected' ? '<span class="badge b-bad">مرفوض</span>'
+        : bk.receiptStatus === 'pending' ? '<span class="badge b-pend">⏳ بانتظار المراجعة</span>'
+        : '<span class="badge b-gray">بدون إيصال</span>';
+      return `<div class="card">
+        <div class="row"><b>🎟️ ${bk.passengerName} (#SHB-${bk.boardingCode})</b>${st}</div>
+        <div style="font-size:12px;color:var(--muted)">📱 ${bk.passengerPhone} · 💳 ${bk.payMethod} · العربون: <b>${bk.depositPaid || trip.depositFee || 40} ج</b> ${bk.promoCode ? '🎟️ ' + bk.promoCode : ''}</div>
+        <div style="font-size:12px;margin-top:3px">🛣️ ${trip.from} ← ${trip.to} (${trip.driver})</div>
+        <div class="docs" style="grid-template-columns:repeat(2,1fr)">
+          ${docBox('إيصال التحويل', bk.receiptUrl)}
+          ${docBox('صورة الشنطة', bk.bagPhotoUrl)}
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="verifyReceipt(${trip.id},'${bk.passengerPhone}','approve')">✅ اعتماد الإيصال</button>
+          <button class="btn red" onclick="verifyReceipt(${trip.id},'${bk.passengerPhone}','reject')">❌ رفض</button>
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+  } else if (activeTab === 'reports') {
+    renderFilters([
+      ['all', `الكل (${STATE.reports.length})`],
+      ['escrow_hold', `⏳ معلّق للمراجعة (${pendingRep})`],
+      ['resolved', `✅ تم الحسم`]
+    ]);
+    const list = STATE.reports.filter(r => {
+      if (subFilter === 'escrow_hold') return r.status === 'escrow_hold';
+      if (subFilter === 'resolved') return r.status !== 'escrow_hold';
+      return true;
+    });
+    if (!list.length) { box.innerHTML = '<div class="empty">لا توجد بلاغات في هذا التصنيف</div>'; return; }
+    box.innerHTML = '<div class="grid">' + list.map(r => {
+      const st = r.status === 'escrow_hold' ? '<span class="badge b-pend">⏳ العربون معلّق للمراجعة</span>'
+        : r.status === 'refunded_to_passenger' ? '<span class="badge b-ok">تم الرد للمسافر</span>'
+        : '<span class="badge b-bad">صودر للكابتن (بلاغ كاذب)</span>';
+      return `<div class="card">
+        <div class="row"><b>🚨 بلاغ رحلة #${r.tripId}</b>${st}</div>
+        <div style="font-size:12px">المسافر: <b>${r.passengerName}</b> (${r.passengerPhone})</div>
+        <div style="font-size:12px">الكابتن: <b>${r.driverName}</b> (${r.driverPhone})</div>
+        <div style="font-size:12px;margin:6px 0;background:#fff1f2;padding:7px;border-radius:8px">
+          المسجل: <b>${r.expectedPlate}</b> ← المُبلّغ عنها: <b style="color:var(--red)">${r.actualPlate}</b>
+        </div>
+        <div class="docs" style="grid-template-columns:1fr">
+          ${docBox('الصورة الحية المرفوعة', r.photoUrl)}
+        </div>
+        ${r.status === 'escrow_hold' ? `<div class="actions">
+          <button class="btn" onclick="resolveReport(${r.id},'refund_passenger')">💸 البلاغ صادق (رد للمسافر)</button>
+          <button class="btn red" onclick="resolveReport(${r.id},'forfeit_to_driver')">⚖️ كاذب (مصادرة للكابتن)</button>
+        </div>` : ''}
+      </div>`;
+    }).join('') + '</div>';
+  } else if (activeTab === 'trips') {
+    renderFilters([
+      ['all', `كل الرحلات (${STATE.trips.length})`],
+      ['ongoing', `🟢 جارية وبها ركاب (${ongoingTrips})`],
+      ['available', `🟡 متاحة للحجز (${availableTrips})`],
+      ['completed', `✅ مكتملة (${completedTrips})`]
+    ]);
+    const list = STATE.trips.filter(t => subFilter === 'all' ? true : getTripStage(t) === subFilter);
+    if (!list.length) { box.innerHTML = '<div class="empty">لا توجد رحلات في هذا التصنيف</div>'; return; }
+    box.innerHTML = '<div class="grid">' + list.map(t => {
+      const stage = getTripStage(t);
+      const stBadge = stage === 'completed' ? '<span class="badge b-ok">✅ مكتملة</span>'
+        : stage === 'ongoing' ? '<span class="badge b-blue">🟢 جارية الآن (بها ركاب)</span>'
+        : '<span class="badge b-pend">🟡 متاحة للحجز</span>';
+      const activeBks = (t.bookings || []).filter(b => b.status !== 'cancelled');
+      const totalCollected = activeBks.reduce((s, b) => s + (b.depositPaid || t.depositFee || 40), 0);
+      return `
+      <div class="card">
+        <div class="row"><b>🚘 ${t.from} ← ${t.to}</b>${stBadge}</div>
+        <div style="font-size:12px;color:var(--muted)">📅 ${t.date} · ⏰ ${t.time} · 📍 ${t.pickup}</div>
+        <div style="font-size:12px;margin-top:3px">الكابتن: <b>${t.driver}</b> (${t.driverPhone}) · ${t.car} (<b>${t.plate}</b>)</div>
+        <div style="font-size:12px;margin-top:4px;font-weight:700;color:var(--g)">💵 ${t.price} ج.م/كرسي · محجوز: ${activeBks.length} / متبقي: ${t.seats} · عربون: ${totalCollected} ج</div>
+        <div style="margin-top:8px;background:#f8faf8;padding:8px;border-radius:10px">
+          <b style="font-size:11.5px">👥 الركاب (${activeBks.length}):</b>
+          ${activeBks.length ? activeBks.map(b => {
+            const bSt = b.status === 'boarded' ? '✅ ركب' : b.status === 'mismatch_pending' ? '🚨 بلاغ لوحة' : '🎟️ محجوز';
+            const rSt = b.receiptStatus === 'approved' ? 'إيصال ✓' : b.receiptStatus === 'rejected' ? 'إيصال ✕' : 'مراجعة ⏳';
+            return `<div class="pax-item"><span><b>${b.passengerName}</b> (${b.passengerPhone})</span><span>${bSt} · ${rSt}</span></div>`;
+          }).join('') : '<div style="font-size:11px;color:#94a3b8;margin-top:3px">في انتظار ركاب</div>'}
+        </div>
+        <div style="font-size:11.5px;margin-top:8px;background:#f8faf8;padding:8px;border-radius:8px;max-height:110px;overflow-y:auto">
+          <b>💬 الشات (${(t.messages||[]).length}):</b><br>
+          ${(t.messages||[]).length ? t.messages.map(m => `<div>• <b>${m.senderName}:</b> ${m.text}</div>`).join('') : '<span style="color:#94a3b8">لا توجد رسائل</span>'}
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+}
+
+loadOverview(false);
+if (typeof EventSource !== 'undefined') {
+  try {
+    const es = new EventSource(API_BASE + '/api/events');
+    es.onmessage = () => loadOverview(false);
+  } catch (e) {}
+}
+setInterval(() => loadOverview(false), 15000);
+</script>
+</body>
+</html>
